@@ -1,0 +1,7 @@
+Stanford 3D semantic parsing dataset:
+    https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7780539&tag=1
+    Fill in the form https://docs.google.com/forms/d/e/1FAIpQLScDimvNMCGhy_rmBA2gHfDu3naktRm6A8BPwAWWDv-Uhm6Shw/viewform
+
+ModelNet40:
+    https://arxiv.org/pdf/1406.5670
+    https://3dshapenets.cs.princeton.edu
