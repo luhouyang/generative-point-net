@@ -23,10 +23,19 @@ def convert_off_to_ply(root_dir, split="train"):
     - root_dir (str): Path to the ModelNet40 dataset.
     - split (str): 'train' or 'test', depending on which dataset to convert.
     """
-    train_txt_path = os.path.join(root_dir, "train.txt")
+    # train_txt_path = os.path.join(root_dir, "train.txt")
 
-    with open(train_txt_path, "r") as f:
-        class_names = [line.strip() for line in f.readlines()]
+    # with open(train_txt_path, "r") as f:
+    #     class_names = [line.strip() for line in f.readlines()]
+    
+    class_names = [
+        "airplane", "bathtub", "bed", "bench", "bookshelf", "bottle", "bowl",
+        "car", "chair", "cone", "cup", "curtain", "desk", "door", "dresser",
+        "flower_pot", "glass_box", "guitar", "keyboard", "lamp", "laptop",
+        "mantel", "monitor", "night_stand", "person", "piano", "plant",
+        "radio", "range_hood", "sink", "sofa", "stairs", "stool", "table",
+        "tent", "toilet", "tv_stand", "vase", "wardrobe", "xbox"
+    ]
 
     for class_name in class_names:
         input_folder = os.path.join(root_dir, class_name, split)
