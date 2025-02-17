@@ -477,7 +477,7 @@ if __name__ == '__main__':
             npoints=2500,
             classification=False,
             class_choice=class_choice,
-            split='train',
+            split='train',  # train | test
             data_augmentation=True,
         )
 
@@ -490,7 +490,7 @@ if __name__ == '__main__':
 
             point_cloud = create_open3d_point_cloud(d[i][0], [0, 0, 1])
             vis = o3d.visualization.Visualizer()
-            vis.create_window(window_name='part segmentation - ' +
+            vis.create_window(window_name='Part Segmentation - ' +
                               ' '.join(class_choice))
             vis.add_geometry(point_cloud)
 
@@ -498,7 +498,13 @@ if __name__ == '__main__':
             vis.destroy_window()
 
         # classification
-        d = ShapeNetDataset(root=datapath, classification=True)
+        d = ShapeNetDataset(
+            root=datapath,
+            npoints=2500,
+            classification=True,
+            split='train',  # train | test
+            data_augmentation=True,
+        )
         print(len(d))
         ps, cls = d[0]
         print(ps.size(), ps.type(), cls.size(), cls.type())
@@ -514,7 +520,7 @@ if __name__ == '__main__':
 
             point_cloud = create_open3d_point_cloud(d[i][0], [0, 0, 1])
             vis = o3d.visualization.Visualizer()
-            vis.create_window(window_name='classification - ' +
+            vis.create_window(window_name='Classification - ' +
                               shapenet_id2label[d[i][1].numpy()[0]])
             vis.add_geometry(point_cloud)
 
