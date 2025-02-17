@@ -3,5 +3,9 @@ Stanford 3D semantic parsing dataset:
     Fill in the form https://docs.google.com/forms/d/e/1FAIpQLScDimvNMCGhy_rmBA2gHfDu3naktRm6A8BPwAWWDv-Uhm6Shw/viewform
 
 ModelNet40 & ModelNet10:
-    https://arxiv.org/pdf/1406.5670
-    https://3dshapenets.cs.princeton.edu
+    https://arxiv.org/abs/1406.5670
+    https://3dshapenets.cs.princeton.edu | https://modelnet.cs.princeton.edu
+
+ShapeNet:
+    https://arxiv.org/abs/1512.03012
+    https://www.kaggle.com/datasets/guxue17/shapenet1?select=shapenet
