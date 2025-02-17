@@ -11,7 +11,7 @@ Learning and experimentation with [Generative PointNet](https://arxiv.org/abs/20
     1. Run preprocessing script [/src/pointnet/preprocessing/modelnet40/preprocessing.py](/src/pointnet/preprocessing/modelnet40/preprocess.py)
     1. Uncomment code at bottom to test dataset loading [/src/pointnet/dataset.py](/src/pointnet/dataset.py)
     1. Example command
-
+    </br>
     ```
     cd PATH\generative-point-net\src\pointnet
     python dataset.py modelnet40 PATH\ModelNet40 
@@ -27,7 +27,7 @@ Learning and experimentation with [Generative PointNet](https://arxiv.org/abs/20
     1. Run preprocessing script [/src/pointnet/preprocessing/modelnet10/preprocessing.py](/src/pointnet/preprocessing/modelnet10/preprocess.py)
     1. Uncomment code at bottom to test dataset loading [/src/pointnet/dataset.py](/src/pointnet/dataset.py)
     1. Example command
-
+    </br>
     ```
     cd PATH\generative-point-net\src\pointnet
     python dataset.py modelnet10 PATH\ModelNet10 
@@ -38,7 +38,7 @@ Learning and experimentation with [Generative PointNet](https://arxiv.org/abs/20
     1. Download the ShapeNet dataset & unzip
     1. Uncomment code at bottom to test dataset loading [/src/pointnet/dataset.py](/src/pointnet/dataset.py)
     1. Example command
-
+    </br>
     ```
     cd PATH\generative-point-net\src\pointnet
     python dataset.py shapenet PATH\shapenet\shapenetcore_partanno_segmentation_benchmark_v0 
