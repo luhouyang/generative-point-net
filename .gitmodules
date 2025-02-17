@@ -1,3 +1,6 @@
 [submodule "src/pointnet/references/pointnet"]
 	path = src/pointnet/references/pointnet
 	url = https://github.com/luhouyang/pointnet.git
+[submodule "src/pointnet/references/pointnet.pytorch"]
+	path = src/pointnet/references/pointnet.pytorch
+	url = https://github.com/fxia22/pointnet.pytorch.git
