@@ -11,6 +11,9 @@ import trimesh
 
 import os
 
+# root dir of dataset
+root_dir = "D:/storage/ModelNet10"
+
 
 def convert_off_to_ply(root_dir, split="train"):
     """
@@ -22,13 +25,11 @@ def convert_off_to_ply(root_dir, split="train"):
     """
     train_txt_path = os.path.join(root_dir, "train.txt")
 
-    # Read class names from train.txt
     with open(train_txt_path, "r") as f:
         class_names = [line.strip() for line in f.readlines()]
 
     for class_name in class_names:
-        input_folder = os.path.join(root_dir, class_name,
-                                    split)  # train or test folder
+        input_folder = os.path.join(root_dir, class_name, split)
         output_folder = os.path.join(root_dir, class_name, f"{split}_ply")
 
         if not os.path.exists(input_folder):
@@ -52,9 +53,5 @@ def convert_off_to_ply(root_dir, split="train"):
                     print(f"Failed to convert {input_file}: {e}")
 
 
-# Set the path to your ModelNet10 dataset root folder
-root_dir = "D:/storage/ModelNet10"
-
-# Convert train and test data
 convert_off_to_ply(root_dir, "train")
 convert_off_to_ply(root_dir, "test")
