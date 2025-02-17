@@ -1,4 +1,5 @@
 # dataset classes referenced from: https://github.com/fxia22/pointnet.pytorch/tree/master
+# editted to work with original dataset folder structure
 
 from __future__ import print_function
 import torch.utils.data as data
@@ -11,6 +12,25 @@ from tqdm import tqdm
 import json
 from plyfile import PlyData, PlyElement
 
+shapenet_label2id = {
+    "Airplane": 0,
+    "Bag": 1,
+    "Cap": 2,
+    "Car": 3,
+    "Chair": 4,
+    "Earphone": 5,
+    "Guitar": 6,
+    "Knife": 7,
+    "Lamp": 8,
+    "Laptop": 9,
+    "Motorbike": 10,
+    "Mug": 11,
+    "Pistol": 12,
+    "Rocket": 13,
+    "Skateboard": 14,
+    "Table": 15
+}
+
 modelnet10_label2id = {
     'bathtub': 0,
     'bed': 1,
@@ -19,10 +39,9 @@ modelnet10_label2id = {
     'dresser': 4,
     'monitor': 5,
     'night_stand': 6,
-    'raw': 7,
-    'sofa': 8,
-    'label': 9,
-    'toilet': 10
+    'sofa': 7,
+    'table': 8,
+    'toilet': 9
 }
 
 modelnet40_label2id = {
@@ -143,7 +162,8 @@ class ShapeNetDataset(data.Dataset):
                  classification=False,
                  class_choice=None,
                  split='train',
-                 data_augmentation=True):
+                 data_augmentation=True,
+                 seed: int = None):
         self.npoints = npoints
         self.root = root
         self.catfile = os.path.join(self.root, 'synsetoffset2category.txt')
@@ -156,7 +176,8 @@ class ShapeNetDataset(data.Dataset):
             for line in f:
                 ls = line.strip().split()
                 self.cat[ls[0]] = ls[1]
-        #print(self.cat)
+
+        # print(self.cat)
         if not class_choice is None:
             self.cat = {k: v for k, v in self.cat.items() if k in class_choice}
 
@@ -165,7 +186,8 @@ class ShapeNetDataset(data.Dataset):
         self.meta = {}
         splitfile = os.path.join(self.root, 'train_test_split',
                                  'shuffled_{}_file_list.json'.format(split))
-        #from IPython import embed; embed()
+
+        # from IPython import embed; embed()
         filelist = json.load(open(splitfile, 'r'))
         for item in self.cat:
             self.meta[item] = []
@@ -184,8 +206,15 @@ class ShapeNetDataset(data.Dataset):
             for fn in self.meta[item]:
                 self.datapath.append((item, fn[0], fn[1]))
 
+        if seed:
+            np.random.seed(seed)
+
+        indices = np.arange(len(self.datapath))
+        np.random.shuffle(indices)
+        self.datapath = np.array(self.datapath)[indices]
+
         self.classes = dict(zip(sorted(self.cat), range(len(self.cat))))
-        print(self.classes)
+        # print(self.classes)
         with open(
                 os.path.join(os.path.dirname(os.path.realpath(__file__)),
                              'misc/num_seg_classes.txt'), 'r') as f:
@@ -193,23 +222,23 @@ class ShapeNetDataset(data.Dataset):
                 ls = line.strip().split()
                 self.seg_classes[ls[0]] = int(ls[1])
         self.num_seg_classes = self.seg_classes[list(self.cat.keys())[0]]
-        print(self.seg_classes, self.num_seg_classes)
+        # print(self.seg_classes, self.num_seg_classes)
 
     def __getitem__(self, index):
         fn = self.datapath[index]
         cls = self.classes[self.datapath[index][0]]
         point_set = np.loadtxt(fn[1]).astype(np.float32)
         seg = np.loadtxt(fn[2]).astype(np.int64)
-        #print(point_set.shape, seg.shape)
+        # print(point_set.shape, seg.shape)
 
         choice = np.random.choice(len(seg), self.npoints, replace=True)
-        #resample
+        # resample
         point_set = point_set[choice, :]
 
         point_set = point_set - np.expand_dims(np.mean(point_set, axis=0),
                                                0)  # center
         dist = np.max(np.sqrt(np.sum(point_set**2, axis=1)), 0)
-        point_set = point_set / dist  #scale
+        point_set = point_set / dist  # scale
 
         if self.data_augmentation:
             theta = np.random.uniform(0, np.pi * 2)
@@ -391,9 +420,21 @@ class ModelNet40Dataset(data.Dataset):
 
 if __name__ == '__main__':
     import open3d as o3d
+    """
+    @article{Zhou2018,
+        author    = {Qian-Yi Zhou and Jaesik Park and Vladlen Koltun},
+        title     = {{Open3D}: {A} Modern Library for {3D} Data Processing},
+        journal   = {arXiv:1801.09847},
+        year      = {2018},
+    }
+    """
+
+    from pathlib import Path
 
     dataset = sys.argv[1]
     datapath = sys.argv[2]
+
+    dataset_list = ['shapenet', 'modelnet10', 'modelnet40']
 
     def create_open3d_point_cloud(points, color):
         """
@@ -411,19 +452,74 @@ if __name__ == '__main__':
         pcd.paint_uniform_color(color)
         return pcd
 
+    if dataset not in dataset_list:
+        raise ValueError(
+            f"'{dataset}' is not a valid dataset choice. Please select from 'shapenet' | 'modelnet10' | 'modelnet40'"
+        )
+
+    if not Path(datapath).exists():
+        raise ValueError(
+            f"'{datapath}' is not a valid path. Please check the path again.")
+
     if dataset == 'shapenet':
         get_segmentation_classes(datapath)
 
-        d = ShapeNetDataset(root=datapath, class_choice=['Chair'])
-        print(len(d))
-        ps, seg = d[0]
-        print(ps.size(), ps.type(), seg.size(), seg.type())
+        shapenet_id2label = {v: k for k, v in shapenet_label2id.items()}
 
+        # part segmentation
+        # 'Airplane', 'Bag', 'Cap', 'Car', 'Chair', 'Earphone', 'Guitar', 'Knife', 'Lamp', 'Laptop'
+        # 'Motorbike', 'Mug', 'Pistol', 'Rocket', 'Skateboard', 'Table'
+
+        class_choice = ['Chair']
+
+        d = ShapeNetDataset(
+            root=datapath,
+            npoints=2500,
+            classification=False,
+            class_choice=class_choice,
+            split='train',
+            data_augmentation=True,
+        )
+
+        print(f"Number of data: {len(d)}")
+        for i in range(2):
+            ps, seg = d[i]
+            print(f"Num points: {len(ps.numpy())}")
+            print(ps.size(), ps.type(), seg.size(), seg.type())
+            print(ps)
+
+            point_cloud = create_open3d_point_cloud(d[i][0], [0, 0, 1])
+            vis = o3d.visualization.Visualizer()
+            vis.create_window(window_name='part segmentation - ' +
+                              ' '.join(class_choice))
+            vis.add_geometry(point_cloud)
+
+            vis.run()
+            vis.destroy_window()
+
+        # classification
         d = ShapeNetDataset(root=datapath, classification=True)
         print(len(d))
         ps, cls = d[0]
         print(ps.size(), ps.type(), cls.size(), cls.type())
-        # get_segmentation_classes(datapath)
+
+        print(f"Number of data: {len(d)}")
+        for i in range(4):
+            ps, cls = d[i]
+            print(
+                f"\nClass: {shapenet_id2label[cls.numpy()[0]]}\tNum points: {len(ps.numpy())}"
+            )
+            print(ps.size(), ps.type(), seg.size(), seg.type())
+            print(ps)
+
+            point_cloud = create_open3d_point_cloud(d[i][0], [0, 0, 1])
+            vis = o3d.visualization.Visualizer()
+            vis.create_window(window_name='classification - ' +
+                              shapenet_id2label[d[i][1].numpy()[0]])
+            vis.add_geometry(point_cloud)
+
+            vis.run()
+            vis.destroy_window()
 
     if dataset == 'modelnet10':
         gen_modelnet10_id(datapath)
@@ -432,29 +528,27 @@ if __name__ == '__main__':
 
         d = ModelNet10Dataset(
             root=datapath,
-            npoints=2500,
+            npoints=5000,
             split='train',  # train | test
             data_augmentation=True,
-            seed=42,
         )
 
         print(f"Number of data: {len(d)}")
-        for i in range(16):
+        for i in range(8):
             sample = d[i]
             print(
                 f"\nClass: {modelnet10_id2label[sample[1].numpy()[0]]}\tNum points: {len(sample[0].numpy())}"
             )
             print(sample[0])
 
-        sample_index = 0
-        point_cloud = create_open3d_point_cloud(d[sample_index][0], [0, 0, 1])
-        vis = o3d.visualization.Visualizer()
-        vis.create_window(
-            window_name=modelnet10_id2label[d[sample_index][1].numpy()[0]])
-        vis.add_geometry(point_cloud)
+            point_cloud = create_open3d_point_cloud(d[i][0], [0, 0, 1])
+            vis = o3d.visualization.Visualizer()
+            vis.create_window(
+                window_name=modelnet10_id2label[d[i][1].numpy()[0]])
+            vis.add_geometry(point_cloud)
 
-        vis.run()
-        vis.destroy_window()
+            vis.run()
+            vis.destroy_window()
 
     if dataset == 'modelnet40':
         gen_modelnet40_id(datapath)
@@ -463,26 +557,24 @@ if __name__ == '__main__':
 
         d = ModelNet40Dataset(
             root=datapath,
-            npoints=2500,
+            npoints=5000,
             split='train',  # train | test
             data_augmentation=True,
-            seed=42,
         )
 
         print(f"Number of data: {len(d)}")
-        for i in range(16):
+        for i in range(8):
             sample = d[i]
             print(
                 f"\nClass: {modelnet40_id2label[sample[1].numpy()[0]]}\tNum points: {len(sample[0].numpy())}"
             )
             print(sample[0])
 
-        sample_index = 0
-        point_cloud = create_open3d_point_cloud(d[sample_index][0], [0, 0, 1])
-        vis = o3d.visualization.Visualizer()
-        vis.create_window(
-            window_name=modelnet40_id2label[d[sample_index][1].numpy()[0]])
-        vis.add_geometry(point_cloud)
+            point_cloud = create_open3d_point_cloud(d[i][0], [0, 0, 1])
+            vis = o3d.visualization.Visualizer()
+            vis.create_window(
+                window_name=modelnet40_id2label[d[i][1].numpy()[0]])
+            vis.add_geometry(point_cloud)
 
-        vis.run()
-        vis.destroy_window()
+            vis.run()
+            vis.destroy_window()

@@ -6,5 +6,5 @@ dresser
 monitor
 night_stand
 sofa
-lable
+table
 toilet
