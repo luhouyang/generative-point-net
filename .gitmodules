@@ -1,0 +1,3 @@
+[submodule "src/pointnet/references/pointnet"]
+	path = src/pointnet/references/pointnet
+	url = https://github.com/luhouyang/pointnet.git
