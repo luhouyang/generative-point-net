@@ -164,7 +164,7 @@ def gen_modelnet40_id(root):
             f.write('{}\t{}\n'.format(classes[i], i))
 
 
-class ShapeNetDataset(data.Dataset):
+class ShapeNetCoreDataset(data.Dataset):
 
     def __init__(self,
                  root,

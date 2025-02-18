@@ -1,12 +1,12 @@
 import torch
 from torch.utils.data import DataLoader
 
-from src.pointnet.dataset import ShapeNetDataset, ModelNet10Dataset, ModelNet40Dataset
+from src.pointnet.dataset import ShapeNetCoreDataset, ModelNet10Dataset, ModelNet40Dataset
 
 from typing import List
 
 
-def get_shapenet_dataloader(
+def get_shapenetcore_dataloader(
     root: str,
     npoints: int = 2500,
     classification: bool = False,
@@ -50,7 +50,7 @@ def get_shapenet_dataloader(
 
     datasets = {
         x:
-        ShapeNetDataset(
+        ShapeNetCoreDataset(
             root=root,
             split=x,
             class_choice=class_choice,

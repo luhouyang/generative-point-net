@@ -65,7 +65,7 @@ if __name__ == '__main__':
 
         class_choice = ['Chair']
 
-        dataloaders = get_shapenet_dataloader(
+        dataloaders = get_shapenetcore_dataloader(
             root=datapath,
             npoints=2500,
             classification=False,
@@ -94,7 +94,7 @@ if __name__ == '__main__':
                     f'Part Segmentation - {phase} - ' + ' '.join(class_choice))
 
         # classification
-        dataloaders = get_shapenet_dataloader(
+        dataloaders = get_shapenetcore_dataloader(
             root=datapath,
             npoints=2500,
             classification=True,

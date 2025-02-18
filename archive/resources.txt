@@ -1,11 +1,15 @@
-Stanford 3D semantic parsing dataset:
-    https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7780539&tag=1
+Stanford Large-Scale Indoor Spaces 3D Dataset:
+    https://ieeexplore.ieee.org/document/7780539
     Fill in the form https://docs.google.com/forms/d/e/1FAIpQLScDimvNMCGhy_rmBA2gHfDu3naktRm6A8BPwAWWDv-Uhm6Shw/viewform
 
 ModelNet40 & ModelNet10:
     https://arxiv.org/abs/1406.5670
     https://3dshapenets.cs.princeton.edu | https://modelnet.cs.princeton.edu
 
+ShapeNetCore:
+    https://dl.acm.org/doi/10.1145/2980179.2980238
+    https://www.kaggle.com/datasets/guxue17/shapenet1?select=shapenet
+
 ShapeNet:
     https://arxiv.org/abs/1512.03012
-    https://www.kaggle.com/datasets/guxue17/shapenet1?select=shapenet
+    https://shapenet.org/

@@ -65,7 +65,7 @@ if __name__ == '__main__':
 
         class_choice = ['Chair']
 
-        d = ShapeNetDataset(
+        d = ShapeNetCoreDataset(
             root=datapath,
             npoints=2500,
             classification=False,
@@ -85,7 +85,7 @@ if __name__ == '__main__':
                       'Part Segmentation - ' + ' '.join(class_choice))
 
         # classification
-        d = ShapeNetDataset(
+        d = ShapeNetCoreDataset(
             root=datapath,
             npoints=2500,
             classification=True,
