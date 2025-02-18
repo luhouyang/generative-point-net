@@ -48,3 +48,31 @@ Learning and experimentation with [Generative PointNet](https://arxiv.org/abs/20
 ## **Models**
 
 UPCOMING
+
+## **Data Handlers**
+
+- **ModelNet40**
+    ```
+    cd PATH\generative-point-net
+    python -m src.test.datahandler_test modelnet40 PATH\ModelNet40
+    ```
+
+- **ModelNet10**
+    ```
+    cd PATH\generative-point-net
+    python -m src.test.datahandler_test modelnet10 PATH\ModelNet10
+    ```
+
+- **ShapeNet**
+    ```
+    cd PATH\generative-point-net
+    python -m src.test.datahandler_test shapenet PATH\shapenet\shapenetcore_partanno_segmentation_benchmark_v0
+    ```
+
+## **Dataset Example Images**
+
+![ModelNet40 Example 3D Point Cloud](/archive/images/modelnet40_3d_pointcloud_image.png)
+
+![ModelNet10 Example 3D Point Cloud](/archive/images/modelnet10_3d_pointcloud_image.png)
+
+![ShapeNet Example 3D Point Cloud - Part Segmentation](/archive/images/shapenet_3d_pointcloud_part_segmentation_image.png)
