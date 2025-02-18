@@ -57,27 +57,41 @@ UPCOMING
 ## **Data Handlers**
 
 - **ModelNet40**
+    1. Example testing command
+    </br>
+
     ```
     cd PATH\generative-point-net
     python -m src.test.datahandler_test modelnet40 PATH\ModelNet40
     ```
+    </br>
 
 - **ModelNet10**
+    1. Example testing command
+    </br>
+    
     ```
     cd PATH\generative-point-net
     python -m src.test.datahandler_test modelnet10 PATH\ModelNet10
     ```
+    </br>
 
 - **ShapeNetCore**
+    1. Example testing command
+    </br>
     ```
     cd PATH\generative-point-net
     python -m src.test.datahandler_test shapenet PATH\shapenet\shapenetcore_partanno_segmentation_benchmark_v0
     ```
+    </br>
 
 - **Stanford Large-Scale Indoor Spaces 3D Dataset (S3DIS)**
+    </br>
+
     ```
     UPCOMING
     ```
+    </br>
 
 ## **References**
 
