@@ -17,7 +17,19 @@ def get_shapenet_dataloader(
     shuffle: bool = True,
     is_training: bool = True,
 ):
+    """
+    root                : str   :   path to directory containing subfolders for each class (e.g. D:\storage\shapenet\shapenetcore_partanno_segmentation_benchmark_v0)
+    npoints             : int   :   number of randomly sampled points from original point cloud
+    classification      : bool  :   'True' will return all classes with class labels, 
+                                    'False' will return selected classes in class_choice with per part segmentation
+    class_choice        : List  :   list of classes to include in per part sementation dataset
+    data_augmentation   : bool  :   perform data augmentation according to https://arxiv.org/abs/1612.00593 (pg.6)
+    batch_size          : int   :   number of samples per batch
+    is_training         : bool  :   'True' will return dataloaders with ['train', 'test']
+                                    'False' will return dataloaders with only ['test']
+    """
 
+    # choose per part segmentation classes from here
     accepted_classes = [
         'Airplane', 'Bag', 'Cap', 'Car', 'Chair', 'Earphone', 'Guitar',
         'Knife', 'Lamp', 'Laptop', 'Motorbike', 'Mug', 'Pistol', 'Rocket',
@@ -74,6 +86,14 @@ def get_modelnet10_dataloader(
     shuffle: bool = True,
     is_training: bool = True,
 ):
+    """
+    root                : str   :   path to directory containing subfolders for each class (e.g. D:\storage\ModelNet10)
+    npoints             : int   :   number of randomly sampled points from original point cloud
+    data_augmentation   : bool  :   perform data augmentation according to https://arxiv.org/abs/1612.00593 (pg.6)
+    batch_size          : int   :   number of samples per batch
+    is_training         : bool  :   'True' will return dataloaders with ['train', 'test']
+                                    'False' will return dataloaders with only ['test']
+    """
 
     if is_training:
         splits = ["train", "test"]
@@ -116,6 +136,14 @@ def get_modelnet40_dataloader(
     shuffle: bool = True,
     is_training: bool = True,
 ):
+    """
+    root                : str   :   path to directory containing subfolders for each class (e.g. D:\storage\ModelNet40)
+    npoints             : int   :   number of randomly sampled points from original point cloud
+    data_augmentation   : bool  :   perform data augmentation according to https://arxiv.org/abs/1612.00593 (pg.6)
+    batch_size          : int   :   number of samples per batch
+    is_training         : bool  :   'True' will return dataloaders with ['train', 'test']
+                                    'False' will return dataloaders with only ['test']
+    """
 
     if is_training:
         splits = ["train", "test"]
