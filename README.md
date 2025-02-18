@@ -79,6 +79,7 @@ UPCOMING
 - **ShapeNetCore**
     1. Example testing command
     </br>
+    
     ```
     cd PATH\generative-point-net
     python -m src.test.datahandler_test shapenet PATH\shapenet\shapenetcore_partanno_segmentation_benchmark_v0
