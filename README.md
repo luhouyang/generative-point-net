@@ -74,9 +74,9 @@
 
     ### *Training Loss & Accuracy*
 
-    ![PointNet++ Training Loss](/src/pointnet_plus2/output/Train_Loss.webp)
+    ![PointNet++ Training Loss](/src/pointnet_plus2/output/shapenetcore/Train_Loss.webp)
 
-    ![PointNet++ Training Accuracy](/src/pointnet_plus2/output/Train_Acc.webp)
+    ![PointNet++ Training Accuracy](/src/pointnet_plus2/output/shapenetcore/Train_Acc.webp)
 
     ### *Prediction | 3/4 correct | 1/4 wrong*
 
