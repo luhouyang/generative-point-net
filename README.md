@@ -2,13 +2,13 @@
 
 **Progress**
 
-:white_check_mark PointNet++ Classification Model Exploration
+:white_check_mark: PointNet++ Classification Model Exploration
 
-:white_large_square PointNet++ Segmentation Model Exploration
+:white_large_square: PointNet++ Segmentation Model Exploration
 
-:white_large_square Generative PointNet Mocel Exploration
+:white_large_square: Generative PointNet Mocel Exploration
 
-:white_large_square New Generative Point Cloud Model
+:white_large_square: New Generative Point Cloud Model
 
 ## **Datasets**
 
