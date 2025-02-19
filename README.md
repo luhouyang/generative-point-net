@@ -1,4 +1,4 @@
-# **Generative PointNet**
+# **Generative Point Cloud Model**
 
 ## **Datasets**
 
