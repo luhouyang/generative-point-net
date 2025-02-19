@@ -65,9 +65,11 @@ def get_dataloaders(is_training=True):
 def main(is_training=True):
     dataloaders, num_classes = get_dataloaders()
 
-    model = PointNetCls(k=num_classes, feature_transform=args.feature_transform)
+    model = PointNetCls(k=num_classes,
+                        feature_transform=args.feature_transform)
 
-    optimizer = optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.999))
+    # hyper-parameters from PointNet paper - Supplementary - C (pg.10)
+    optimizer = optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.99))
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.5)
 
     train_loss_list = []
@@ -82,11 +84,12 @@ def main(is_training=True):
 
     phases = ['train', 'test'] if is_training else ['test']
 
-    with open(os.path.join(args.output, 'log.csv'), 'w', newline='') as csvfile:
+    with open(os.path.join(args.output, 'log.csv'), 'w',
+              newline='') as csvfile:
         csvfile.write(f"epoch,train_loss,train_acc,test_loss,test_acc\n")
 
     for epoch in range(args.epochs):
-        
+
         for phase in phases:
             if phase == 'Train':
                 model.train()
@@ -132,7 +135,9 @@ def main(is_training=True):
 
             epoch_loss = np.mean(loss_list)
             epoch_accuracy = np.mean(accuracy_list)
-            print(f"{epoch+1} | {phase} | loss: {epoch_loss}\taccuracy: {epoch_accuracy}\n")
+            print(
+                f"{epoch+1} | {phase} | loss: {epoch_loss}\taccuracy: {epoch_accuracy}\n"
+            )
             if (phase == 'train'):
                 train_loss_list.append(epoch_loss)
                 train_accuracy_list.append(epoch_accuracy)
@@ -142,14 +147,15 @@ def main(is_training=True):
 
         scheduler.step()
 
-        with open(os.path.join(args.output, 'log.csv'), 'a', newline='') as csvfile:
-            csvfile.write(f"{epoch+1},{train_loss_list[epoch]},{train_accuracy_list[epoch]},{test_loss_list[epoch]},{test_accuracy_list[epoch]}\n")
+        with open(os.path.join(args.output, 'log.csv'), 'a',
+                  newline='') as csvfile:
+            csvfile.write(
+                f"{epoch+1},{train_loss_list[epoch]},{train_accuracy_list[epoch]},{test_loss_list[epoch]},{test_accuracy_list[epoch]}\n"
+            )
 
         torch.save(model.state_dict(),
-                '%s/pointnet_pp_model_%d.pth' % (args.output, (epoch+1)))
+                   '%s/pointnet_model_%d.pth' % (args.output, (epoch + 1)))
 
-
-# python main.py --output C:\Users\User\Desktop\Python\deep_learning\generative_point_net\src\pointnet\output --dataset_path D:\storage\shapenet\shapenetcore_partanno_segmentation_benchmark_v0
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

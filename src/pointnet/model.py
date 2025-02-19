@@ -7,7 +7,17 @@ from torch.autograd import Variable
 import numpy as np
 import torch.nn.functional as F
 
-
+# input transform
+#
+# 3D version of Spatial Transformer Network (STN) [https://arxiv.org/pdf/1811.07246]
+# torch.nn.Conv1d() : 1 x 1 convolution is used to implement the MLP
+# 
+# from PointNet paper, f(.) ≈ g[h(.)]
+# where h(.) is the collection of MLPs that learn to capture properties of the set
+# g(.) is the symmetric function (MaxPooling) that produce new vector that is invariant to the inputs order
+#
+# T-net Architecture
+# learns a transformation matrix, orients the input point cloud before feature extraction
 class STN3d(nn.Module):
 
     def __init__(self):
@@ -29,15 +39,19 @@ class STN3d(nn.Module):
     def forward(self, x):
         batchsize = x.size()[0]
         x = F.relu(self.bn1(self.conv1(x)))
+        # scale up, feature extraction
         x = F.relu(self.bn2(self.conv2(x)))
         x = F.relu(self.bn3(self.conv3(x)))
+        # MaxPooling (symmetric function)
         x = torch.max(x, 2, keepdim=True)[0]
         x = x.view(-1, 1024)
 
+        # scale down, to transformation matrix 9 | (3 x 3)
         x = F.relu(self.bn4(self.fc1(x)))
         x = F.relu(self.bn5(self.fc2(x)))
         x = self.fc3(x)
 
+        # initialize (3 x 3) identity matrix
         iden = Variable(
             torch.from_numpy(
                 np.array([1, 0, 0, 0, 1, 0, 0, 0, 1
@@ -45,11 +59,13 @@ class STN3d(nn.Module):
                                                        9).repeat(batchsize, 1)
         if x.is_cuda:
             iden = iden.cuda()
+
+        # output (x) added to identity matrix, ensures matrix is non-singular (has a unique solution)
         x = x + iden
         x = x.view(-1, 3, 3)
         return x
 
-
+# feature transform
 class STNkd(nn.Module):
 
     def __init__(self, k=64):
@@ -199,6 +215,21 @@ def feature_transform_regularizer(trans):
         torch.norm(torch.bmm(trans, trans.transpose(2, 1)) - I, dim=(1, 2)))
     return loss
 
+
+"""
+References:
+
+@article{Pytorch_Pointnet_Pointnet2,
+      Author = {Xu Yan},
+      Title = {Pointnet/Pointnet++ Pytorch},
+      Journal = {https://github.com/yanx27/Pointnet_Pointnet2_pytorch},
+      Year = {2019}
+}
+
+Non-singular matrix reading:
+3-mins reading: https://medium.com/@noshinnawarneha/singular-and-non-singular-matrix-in-machine-learning-in-3-minutes-9f9b58b51c43
+making non-singular matrix: https://www.johndcook.com/blog/2012/06/13/matrix-condition-number/
+"""
 
 # if __name__ == '__main__':
 #     sim_data = Variable(torch.rand(32,3,2500))
