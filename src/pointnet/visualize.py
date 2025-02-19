@@ -2,7 +2,7 @@ import torch
 import open3d as o3d
 import argparse
 import numpy as np
-from src.pointnet_plus2.model import PointNetCls
+from src.pointnet.model import PointNetCls
 from src.pointnet.datahandler import get_shapenetcore_dataloader
 
 shapenet_label2id = {

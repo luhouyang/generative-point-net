@@ -2,9 +2,9 @@
 
 **Progress**
 
-:white_check_mark: PointNet++ Classification Model Exploration
+:white_check_mark: PointNet Classification Model Exploration
 
-:white_large_square: PointNet++ Segmentation Model Exploration
+:white_large_square: PointNet, PointNet++ Classification & Segmentation Model Exploration
 
 :white_large_square: Generative PointNet Mocel Exploration
 
@@ -60,39 +60,39 @@
 
 ## **Models**
 
-- **PointNet++**
+- **PointNet**
 
     1. Run training
     </br>
 
     ```
     cd PATH\generative-point-net
-    python -m src.pointnet_plus2.main --output OUTPUT_DIR --dataset_path PATH\shapenet\shapenetcore_partanno_segmentation_benchmark_v0 --dataset shapenet
+    python -m src.pointnet.main --output OUTPUT_DIR --dataset_path PATH\shapenet\shapenetcore_partanno_segmentation_benchmark_v0 --dataset shapenet
     ```
 
 ## **Classification Results**
 
-- **PointNet++**
+- **PointNet**
 
     1. To run test, first download the [ShapeNetCore trained model](https://drive.google.com/file/d/10bx_57_JCfq6G9Ql1hnd_GpZtPzXhdOm/view?usp=sharing)
     </br>
     
     ```
     cd PATH\generative-point-net
-    python -m src.pointnet_plus2.visualize --model_path PATH\pointnet_pp_model_40.pth --dataset_path PATH\shapenet\shapenetcore_partanno_segmentation_benchmark_v0 --num_samples 4
+    python -m src.pointnet.visualize --model_path PATH\MODEL_PATH.pth --dataset_path PATH\shapenet\shapenetcore_partanno_segmentation_benchmark_v0 --num_samples 4
     ```
 
     ### *Training Loss & Accuracy*
 
-    ![PointNet++ Training Loss](/src/pointnet_plus2/output/shapenetcore/Train_Loss.webp)
+    ![PointNet Training Loss](/src/pointnet/output/shapenetcore/Train_Loss.webp)
 
-    ![PointNet++ Training Accuracy](/src/pointnet_plus2/output/shapenetcore/Train_Acc.webp)
+    ![PointNet Training Accuracy](/src/pointnet/output/shapenetcore/Train_Acc.webp)
 
     ### *Prediction | 3/4 correct | 1/4 wrong*
 
-    ![Prediction image 1](/archive/images/pointnetpp/prediction_1.png)
+    ![Prediction image 1](/archive/images/pointnet/prediction_1.png)
 
-    ![Prediction image 2](/archive/images/pointnetpp/prediction_2.png)
+    ![Prediction image 2](/archive/images/pointnet/prediction_2.png)
 
 
 ## **Data Handlers**
@@ -161,7 +161,7 @@
 
 ## **Trained Models**
 
-- **PointNet++**
+- **PointNet**
 
     1. [ModelNet10](https://drive.google.com/file/d/16z72KgrnAcAB9U4zjA95E147uZFb2zjD/view?usp=sharing)
 
