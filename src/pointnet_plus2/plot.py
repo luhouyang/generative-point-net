@@ -1,7 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-file_path = "C:/Users/User/Desktop/Python/deep_learning/generative_point_net/src/pointnet_plus2/output/log.csv"
+# file_path = "C:/Users/User/Desktop/Python/deep_learning/generative_point_net/src/pointnet_plus2/output/shapenetcore/log.csv"
+# file_path = "C:/Users/User/Desktop/Python/deep_learning/generative_point_net/src/pointnet_plus2/output/modelnet10/log.csv"
+file_path = "C:/Users/User/Desktop/Python/deep_learning/generative_point_net/src/pointnet_plus2/output/modelnet40/log.csv"
 df = pd.read_csv(file_path)
 
 epochs = df.iloc[:, 0]

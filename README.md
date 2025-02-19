@@ -64,7 +64,7 @@
 
 - **PointNet++**
 
-    1. To run test, first download the [trained model](https://drive.google.com/file/d/10bx_57_JCfq6G9Ql1hnd_GpZtPzXhdOm/view?usp=sharing)
+    1. To run test, first download the [ShapeNetCore trained model](https://drive.google.com/file/d/10bx_57_JCfq6G9Ql1hnd_GpZtPzXhdOm/view?usp=sharing)
     </br>
     
     ```
@@ -148,6 +148,16 @@
 1. Generative Energy-Based Model - [A Theory of Generative ConvNet](https://arxiv.org/abs/1602.03264) | [code & data](http://www.stat.ucla.edu/~ywu/GenerativeConvNet/main.html)
 
 1. MCMC-Based Maximum Likelihood Learning of EBMs - [On the Anatomy of MCMC-Based Maximum Likelihood Learning of Energy-Based Models](https://arxiv.org/abs/1903.12370) 
+
+## **Trained Models**
+
+- **PointNet++**
+
+    1. [ModelNet10](https://drive.google.com/file/d/16z72KgrnAcAB9U4zjA95E147uZFb2zjD/view?usp=sharing)
+
+    1. [ModelNet40](https://drive.google.com/file/d/1NwUDitpEFFnwJoQ9RAqlfNKFcxOcC5s8/view?usp=sharing)
+
+    1. [ShapeNetCore](https://drive.google.com/file/d/10bx_57_JCfq6G9Ql1hnd_GpZtPzXhdOm/view?usp=sharing)
 
 ## **Dataset Example Images**
 
