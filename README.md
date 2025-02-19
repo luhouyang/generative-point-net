@@ -1,5 +1,15 @@
 # **Generative Point Cloud Model**
 
+**Progress**
+
+:white_check_mark PointNet++ Classification Model Exploration
+
+:white_large_square PointNet++ Segmentation Model Exploration
+
+:white_large_square Generative PointNet Mocel Exploration
+
+:white_large_square New Generative Point Cloud Model
+
 ## **Datasets**
 
 - **ModelNet40** | [paper](https://arxiv.org/abs/1406.5670) | [dataset](https://3dshapenets.cs.princeton.edu) or [alternative source](https://modelnet.cs.princeton.edu)
