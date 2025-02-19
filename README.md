@@ -57,7 +57,7 @@
 
     ```
     cd PATH\generative-point-net
-    python -m src.pointnet_plus2.main --output OUTPUT_DIR --dataset_path PATH\shapenet\shapenetcore_partanno_segmentation_benchmark_v0
+    python -m src.pointnet_plus2.main --output OUTPUT_DIR --dataset_path PATH\shapenet\shapenetcore_partanno_segmentation_benchmark_v0 --dataset shapenet
     ```
 
 ## **Classification Results**
