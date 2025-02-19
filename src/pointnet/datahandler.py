@@ -1,7 +1,7 @@
 import torch
 from torch.utils.data import DataLoader
 
-from src.pointnet.dataset import ShapeNetCoreDataset, ModelNet10Dataset, ModelNet40Dataset
+from dataset import ShapeNetCoreDataset, ModelNet10Dataset, ModelNet40Dataset
 
 from typing import List
 
@@ -17,8 +17,8 @@ def get_shapenetcore_dataloader(
     shuffle: bool = True,
     is_training: bool = True,
 ):
-    """
-    root                : str   :   path to directory containing subfolders for each class (e.g. D:\storage\shapenet\shapenetcore_partanno_segmentation_benchmark_v0)
+    """Arguments
+    root                : str   :   path to directory containing subfolders for each class (e.g. D:/storage/shapenet/shapenetcore_partanno_segmentation_benchmark_v0)
     npoints             : int   :   number of randomly sampled points from original point cloud
     classification      : bool  :   'True' will return all classes with class labels, 
                                     'False' will return selected classes in class_choice with per part segmentation
@@ -86,8 +86,8 @@ def get_modelnet10_dataloader(
     shuffle: bool = True,
     is_training: bool = True,
 ):
-    """
-    root                : str   :   path to directory containing subfolders for each class (e.g. D:\storage\ModelNet10)
+    """Arguments
+    root                : str   :   path to directory containing subfolders for each class (e.g. D:/storage/ModelNet10)
     npoints             : int   :   number of randomly sampled points from original point cloud
     data_augmentation   : bool  :   perform data augmentation according to https://arxiv.org/abs/1612.00593 (pg.6)
     batch_size          : int   :   number of samples per batch
@@ -136,8 +136,8 @@ def get_modelnet40_dataloader(
     shuffle: bool = True,
     is_training: bool = True,
 ):
-    """
-    root                : str   :   path to directory containing subfolders for each class (e.g. D:\storage\ModelNet40)
+    """Arguments
+    root                : str   :   path to directory containing subfolders for each class (e.g. D:/storage/ModelNet40)
     npoints             : int   :   number of randomly sampled points from original point cloud
     data_augmentation   : bool  :   perform data augmentation according to https://arxiv.org/abs/1612.00593 (pg.6)
     batch_size          : int   :   number of samples per batch
