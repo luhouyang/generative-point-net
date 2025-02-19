@@ -1,7 +1,5 @@
 # **Generative PointNet**
 
-Learning and experimentation with [Generative PointNet](https://arxiv.org/abs/2004.01301)
-
 ## **Datasets**
 
 - **ModelNet40** | [paper](https://arxiv.org/abs/1406.5670) | [dataset](https://3dshapenets.cs.princeton.edu) or [alternative source](https://modelnet.cs.princeton.edu)
@@ -55,6 +53,7 @@ Learning and experimentation with [Generative PointNet](https://arxiv.org/abs/20
 - **PointNet++**
 
     1. Run training
+    </br>
 
     ```
     cd PATH\generative-point-net
@@ -66,7 +65,8 @@ Learning and experimentation with [Generative PointNet](https://arxiv.org/abs/20
 - **PointNet++**
 
     1. To run test, first download the [trained model](https://drive.google.com/file/d/10bx_57_JCfq6G9Ql1hnd_GpZtPzXhdOm/view?usp=sharing)
-
+    </br>
+    
     ```
     cd PATH\generative-point-net
     python -m src.pointnet_plus2.visualize --model_path PATH\pointnet_pp_model_40.pth --dataset_path PATH\shapenet\shapenetcore_partanno_segmentation_benchmark_v0 --num_samples 4
