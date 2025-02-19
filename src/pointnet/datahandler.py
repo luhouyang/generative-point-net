@@ -1,7 +1,7 @@
 import torch
 from torch.utils.data import DataLoader
 
-from dataset import ShapeNetCoreDataset, ModelNet10Dataset, ModelNet40Dataset
+from src.pointnet.dataset import ShapeNetCoreDataset, ModelNet10Dataset, ModelNet40Dataset
 
 from typing import List
 
@@ -12,7 +12,7 @@ def get_shapenetcore_dataloader(
     classification: bool = False,
     class_choice: List = None,
     data_augmentation: bool = True,
-    batch_size: int = 4,
+    batch_size: int = 32,
     num_workers: int = 8,
     shuffle: bool = True,
     is_training: bool = True,
@@ -69,7 +69,7 @@ def get_shapenetcore_dataloader(
             shuffle=shuffle,
             num_workers=num_workers,
             pin_memory=True,
-            prefetch_factor=2,
+            prefetch_factor=4,
         )
         for x in splits
     }
@@ -81,7 +81,7 @@ def get_modelnet10_dataloader(
     root: str,
     npoints: int = 2500,
     data_augmentation: bool = True,
-    batch_size: int = 4,
+    batch_size: int = 32,
     num_workers: int = 8,
     shuffle: bool = True,
     is_training: bool = True,
@@ -119,7 +119,7 @@ def get_modelnet10_dataloader(
             shuffle=shuffle,
             num_workers=num_workers,
             pin_memory=True,
-            prefetch_factor=2,
+            prefetch_factor=4,
         )
         for x in splits
     }
@@ -131,7 +131,7 @@ def get_modelnet40_dataloader(
     root: str,
     npoints: int = 2500,
     data_augmentation: bool = True,
-    batch_size: int = 4,
+    batch_size: int = 32,
     num_workers: int = 8,
     shuffle: bool = True,
     is_training: bool = True,
@@ -169,7 +169,7 @@ def get_modelnet40_dataloader(
             shuffle=shuffle,
             num_workers=num_workers,
             pin_memory=True,
-            prefetch_factor=2,
+            prefetch_factor=4,
         )
         for x in splits
     }
