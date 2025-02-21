@@ -6,7 +6,13 @@
 
 :white_large_square: PointNet, PointNet++ Classification & Segmentation Model Exploration
 
-:white_large_square: Generative PointNet Mocel Exploration
+:white_large_square: Learn about Energy-Based Model (EBM)
+
+:white_large_square: MCMC sampling with Langevin dynamics
+
+:white_large_square: short-run Markov Chain Monte Carlo (MCMC)
+
+:white_large_square: Generative PointNet Model Exploration
 
 :white_large_square: New Generative Point Cloud Model
 
