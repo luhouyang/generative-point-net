@@ -7,11 +7,12 @@ from torch.autograd import Variable
 import numpy as np
 import torch.nn.functional as F
 
+
 # input transform
 #
 # 3D version of Spatial Transformer Network (STN) [https://arxiv.org/pdf/1811.07246]
 # torch.nn.Conv1d() : 1 x 1 convolution is used to implement the MLP
-# 
+#
 # from PointNet paper, f(.) ≈ g[h(.)]
 # where h(.) is the collection of MLPs that learn to capture properties of the set
 # g(.) is the symmetric function (MaxPooling) that produce new vector that is invariant to the inputs order
@@ -64,6 +65,7 @@ class STN3d(nn.Module):
         x = x + iden
         x = x.view(-1, 3, 3)
         return x
+
 
 # feature transform
 class STNkd(nn.Module):
@@ -152,6 +154,7 @@ class PointNetfeat(nn.Module):
             return torch.cat([x, pointfeat], 1), trans, trans_feat
 
 
+# classification model
 class PointNetCls(nn.Module):
 
     def __init__(self, k=2, feature_transform=False):
@@ -175,6 +178,7 @@ class PointNetCls(nn.Module):
         return F.log_softmax(x, dim=1), trans, trans_feat
 
 
+#
 class PointNetDenseCls(nn.Module):
 
     def __init__(self, k=2, feature_transform=False):

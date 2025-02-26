@@ -71,7 +71,7 @@ def main(is_training=True):
     # hyper-parameters from PointNet paper - Supplementary - C (pg.10)
     optimizer = optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.99))
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.5)
-
+ 
     train_loss_list = []
     train_accuracy_list = []
 

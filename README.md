@@ -163,7 +163,15 @@
 
 1. Generative Energy-Based Model - [A Theory of Generative ConvNet](https://arxiv.org/abs/1602.03264) | [code & data](http://www.stat.ucla.edu/~ywu/GenerativeConvNet/main.html)
 
-1. MCMC-Based Maximum Likelihood Learning of EBMs - [On the Anatomy of MCMC-Based Maximum Likelihood Learning of Energy-Based Models](https://arxiv.org/abs/1903.12370) 
+1. MCMC-Based Maximum Likelihood Learning of EBMs - [On the Anatomy of MCMC-Based Maximum Likelihood Learning of Energy-Based Models](https://arxiv.org/abs/1903.12370)
+
+**Repository**
+
+1. yanx27 - [Pointnet_Pointnet2_pytorch](https://github.com/yanx27/Pointnet_Pointnet2_pytorch.git)
+
+1. fxia22 - [pointnet.pytorch](https://github.com/fxia22/pointnet.pytorch.git)
+
+1. opeco17 - [pointnet](https://github.com/opeco17/pointnet.git)
 
 ## **Trained Models**
 
