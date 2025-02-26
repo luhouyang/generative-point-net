@@ -4,9 +4,9 @@
 
 :white_check_mark: Complete dataset loaders for ModelNet, ShapeNetCore, S3DIS
 
-:white_check_mark: PointNet Classification Model Exploration
+:white_check_mark: PointNet Classification & Part Segmentation Model Exploration
 
-:white_large_square: PointNet, PointNet++ Classification & Segmentation Model Exploration
+:white_large_square: PointNet++ Classification & Segmentation Model Exploration
 
 :white_large_square: Learn about Energy-Based Model (EBM)
 
