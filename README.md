@@ -103,6 +103,8 @@ git clone --depth 1 https://github.com/luhouyang/generative-point-net.git
 
 - **PointNet**
 
+    *please check results section for more information on training*
+
     1. To run test, first download the [ShapeNetCore Classification trained model](https://drive.google.com/file/d/10bx_57_JCfq6G9Ql1hnd_GpZtPzXhdOm/view?usp=sharing)
     
         ```
@@ -110,26 +112,12 @@ git clone --depth 1 https://github.com/luhouyang/generative-point-net.git
         python -m src.pointnet.visualize --model_path MODEL_PATH.pth --dataset_path DATA_DIR --num_samples 4
         ```
 
-    ### *Training Loss & Accuracy*
-
-    <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-    <img src="/src/pointnet/output/classification/shapenetcore/train_test_loss.webp" alt="PointNet Training Loss" width="45%">
-    <img src="/src/pointnet/output/classification/shapenetcore/train_test_acc.webp" alt="PointNet Training Accuracy" width="45%">
-    </div> 
-
-    ### *Prediction | 3/4 correct | 1/4 wrong*
-
-    ![Prediction image 1](/archive/images/pointnet/prediction_1.png)
-
-    ![Prediction image 2](/archive/images/pointnet/prediction_2.png)
-
     1. To run test, first download the [ShapeNetCore Part Segmentation trained model](https://drive.google.com/file/d/1RsDBG_priDfwKhZPI-ug8hm7yOf6yXLq/view?usp=sharing)
 
         ```
         cd PATH\generative-point-net
         python -m src.pointnet.visualize_part_seg --model_path MODEL_PATH.pth --dataset_path DATA_DIR --num_samples 4
         ```
-
 
 ## **Data Handlers**
 
@@ -195,6 +183,27 @@ git clone --depth 1 https://github.com/luhouyang/generative-point-net.git
 1. fxia22 - [pointnet.pytorch](https://github.com/fxia22/pointnet.pytorch.git)
 
 1. opeco17 - [pointnet](https://github.com/opeco17/pointnet.git)
+
+## **Results**
+
+- **PointNet**
+    ### *Classification Training Loss & Accuracy*
+
+    ![PointNet Training Loss](/src/pointnet/output/classification/shapenetcore/train_test_loss.webp)
+
+    ![PointNet Training Accuracy](/src/pointnet/output/classification/shapenetcore/train_test_acc.webp)
+
+    ### *Classification Prediction | 3/4 correct | 1/4 wrong*
+
+    ![Prediction image 1](/archive/images/pointnet/prediction_1.png)
+
+    ![Prediction image 2](/archive/images/pointnet/prediction_2.png)
+
+    ### *Part Segmentation Training Loss & Accuracy*
+
+    ![PointNet Training Loss](/src/pointnet/output/part_seg/train_test_loss.png)
+
+    ![PointNet Training Accuracy](/src/pointnet/output/part_seg/train_test_acc.png)
 
 ## **Trained Models**
 
