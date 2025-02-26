@@ -16,6 +16,12 @@
 
 :white_large_square: New Generative Point Cloud Model
 
+## **Clone Latest**
+
+```
+git clone --depth 1 https://github.com/luhouyang/generative-point-net.git
+```
+
 ## **Datasets**
 
 - **ModelNet40** | [paper](https://arxiv.org/abs/1406.5670) | [dataset](https://3dshapenets.cs.princeton.edu) or [alternative source](https://modelnet.cs.princeton.edu)

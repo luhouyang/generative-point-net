@@ -7,3 +7,6 @@
 [submodule "src/GPN/references/GPointNet"]
 	path = src/GPN/references/GPointNet
 	url = https://github.com/luhouyang/GPointNet.git
+[submodule "src/pointnet/references/Pointnet_Pointnet2_pytorch"]
+	path = src/pointnet/references/Pointnet_Pointnet2_pytorch
+	url = https://github.com/yanx27/Pointnet_Pointnet2_pytorch.git
