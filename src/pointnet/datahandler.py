@@ -12,6 +12,7 @@ def get_shapenetcore_dataloader(
     classification: bool = False,
     class_choice: List = None,
     data_augmentation: bool = True,
+    normal_channel: bool = False,
     batch_size: int = 32,
     num_workers: int = 8,
     shuffle: bool = True,
@@ -56,6 +57,7 @@ def get_shapenetcore_dataloader(
             class_choice=class_choice,
             classification=classification,
             data_augmentation=data_augmentation,
+            normal_channel=normal_channel,
             npoints=npoints,
         )
         for x in splits
@@ -69,7 +71,7 @@ def get_shapenetcore_dataloader(
             shuffle=shuffle,
             num_workers=num_workers,
             pin_memory=True,
-            prefetch_factor=4,
+            prefetch_factor=32,
         )
         for x in splits
     }
@@ -119,7 +121,7 @@ def get_modelnet10_dataloader(
             shuffle=shuffle,
             num_workers=num_workers,
             pin_memory=True,
-            prefetch_factor=4,
+            prefetch_factor=32,
         )
         for x in splits
     }
@@ -169,7 +171,7 @@ def get_modelnet40_dataloader(
             shuffle=shuffle,
             num_workers=num_workers,
             pin_memory=True,
-            prefetch_factor=4,
+            prefetch_factor=32,
         )
         for x in splits
     }

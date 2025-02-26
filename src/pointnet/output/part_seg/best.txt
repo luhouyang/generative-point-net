@@ -1,0 +1,1 @@
+C:\Users\User\Desktop\Python\deep_learning\generative_point_net\src\pointnet\output\part_seg\pointnet_part_seg_model_67.pth

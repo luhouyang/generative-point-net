@@ -55,7 +55,7 @@ if __name__ == '__main__':
             f"'{datapath}' is not a valid path. Please check the path again.")
 
     if dataset == 'shapenet':
-        get_segmentation_classes(datapath)
+        # get_segmentation_classes(datapath)
 
         shapenet_id2label = {v: k for k, v in shapenet_label2id.items()}
 
@@ -63,32 +63,38 @@ if __name__ == '__main__':
         # 'Airplane', 'Bag', 'Cap', 'Car', 'Chair', 'Earphone', 'Guitar', 'Knife', 'Lamp', 'Laptop'
         # 'Motorbike', 'Mug', 'Pistol', 'Rocket', 'Skateboard', 'Table'
 
-        class_choice = ['Chair']
+        class_choice = [
+            'Airplane', 'Bag', 'Cap', 'Car', 'Chair', 'Earphone', 'Guitar',
+            'Knife', 'Lamp', 'Laptop', 'Motorbike', 'Mug', 'Pistol', 'Rocket',
+            'Skateboard', 'Table'
+        ]
 
         d = ShapeNetCoreDataset(
             root=datapath,
             npoints=2500,
             classification=False,
+            normal_channel=True,
             class_choice=class_choice,
             split='train',  # train | test
-            data_augmentation=True,
+            data_augmentation=False,
         )
 
         print(f"Number of data: {len(d)}")
         for i in range(2):
-            ps, seg = d[i]
+            ps, cls, seg = d[i]
             print(f"Num points: {len(ps.numpy())}")
             print(ps.size(), ps.type(), seg.size(), seg.type())
             print(ps)
 
             visualize(ps, [0, 0, 1],
-                      'Part Segmentation - ' + ' '.join(class_choice))
+                      'Part Segmentation - ' + class_choice[cls.numpy()[0]])
 
         # classification
         d = ShapeNetCoreDataset(
             root=datapath,
             npoints=2500,
             classification=True,
+            normal_channel=False,
             split='train',  # train | test
             data_augmentation=True,
         )

@@ -51,14 +51,14 @@ git clone --depth 1 https://github.com/luhouyang/generative-point-net.git
         python -m src.test.dataset_test modelnet10 PATH\ModelNet10 
         ```
 
-- **ShapeNetCore** | [paper](https://arxiv.org/abs/1512.03012) | [dataset](https://www.kaggle.com/datasets/guxue17/shapenet1?select=shapenet)
+- **ShapeNetCore** | [paper](https://arxiv.org/abs/1512.03012) | [dataset](https://www.kaggle.com/datasets/mitkir/shapenet)
 
     1. Download the ShapeNetCore dataset & unzip
     1. Example testing command
 
         ```
         cd PATH\generative-point-net
-        python -m src.test.dataset_test shapenet PATH\shapenet\shapenetcore_partanno_segmentation_benchmark_v0 
+        python -m src.test.dataset_test shapenet PATH\shapenet\shapenetcore_partanno_segmentation_benchmark_v0_normal 
         ```
 
 - **Stanford Large-Scale Indoor Spaces 3D Dataset (S3DIS)** | [paper](https://ieeexplore.ieee.org/document/7780539) | [dataset](https://docs.google.com/forms/d/e/1FAIpQLScDimvNMCGhy_rmBA2gHfDu3naktRm6A8BPwAWWDv-Uhm6Shw/viewform)
@@ -89,31 +89,46 @@ git clone --depth 1 https://github.com/luhouyang/generative-point-net.git
 
         ```
         cd PATH\generative-point-net
-        python -m src.pointnet.main --output OUTPUT_DIR --dataset_path PATH\shapenet\shapenetcore_partanno_segmentation_benchmark_v0 --dataset shapenet
+        python -m src.pointnet.main --output OUTPUT_DIR --dataset_path DATA_DIR --dataset shapenet
+        ```
+
+    1. Run segmentation training
+
+        ```
+        cd PATH\generative-point-net
+        python -m src.pointnet.part_segmentation --output OUTPUT_DIR --dataset_path DATA_DIR --dataset shapenet
         ```
 
 ## **Classification Results**
 
 - **PointNet**
 
-    1. To run test, first download the [ShapeNetCore trained model](https://drive.google.com/file/d/10bx_57_JCfq6G9Ql1hnd_GpZtPzXhdOm/view?usp=sharing)
+    1. To run test, first download the [ShapeNetCore Classification trained model](https://drive.google.com/file/d/10bx_57_JCfq6G9Ql1hnd_GpZtPzXhdOm/view?usp=sharing)
     
         ```
         cd PATH\generative-point-net
-        python -m src.pointnet.visualize --model_path PATH\MODEL_PATH.pth --dataset_path PATH\shapenet\shapenetcore_partanno_segmentation_benchmark_v0 --num_samples 4
+        python -m src.pointnet.visualize --model_path MODEL_PATH.pth --dataset_path DATA_DIR --num_samples 4
         ```
 
     ### *Training Loss & Accuracy*
 
-    ![PointNet Training Loss](/src/pointnet/output/classification/shapenetcore/Train_Loss.webp)
-
-    ![PointNet Training Accuracy](/src/pointnet/output/classification/shapenetcore/Train_Acc.webp)
+    <div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+    <img src="/src/pointnet/output/classification/shapenetcore/train_test_loss.webp" alt="PointNet Training Loss" width="45%">
+    <img src="/src/pointnet/output/classification/shapenetcore/train_test_acc.webp" alt="PointNet Training Accuracy" width="45%">
+    </div> 
 
     ### *Prediction | 3/4 correct | 1/4 wrong*
 
     ![Prediction image 1](/archive/images/pointnet/prediction_1.png)
 
     ![Prediction image 2](/archive/images/pointnet/prediction_2.png)
+
+    1. To run test, first download the [ShapeNetCore Part Segmentation trained model](https://drive.google.com/file/d/1RsDBG_priDfwKhZPI-ug8hm7yOf6yXLq/view?usp=sharing)
+
+        ```
+        cd PATH\generative-point-net
+        python -m src.pointnet.visualize_part_seg --model_path MODEL_PATH.pth --dataset_path DATA_DIR --num_samples 4
+        ```
 
 
 ## **Data Handlers**
@@ -139,7 +154,7 @@ git clone --depth 1 https://github.com/luhouyang/generative-point-net.git
     
         ```
         cd PATH\generative-point-net
-        python -m src.test.datahandler_test shapenet PATH\shapenet\shapenetcore_partanno_segmentation_benchmark_v0
+        python -m src.test.datahandler_test shapenet PATH\shapenet\shapenetcore_partanno_segmentation_benchmark_v0_normal
         ```
 
 - **Stanford Large-Scale Indoor Spaces 3D Dataset (S3DIS)**

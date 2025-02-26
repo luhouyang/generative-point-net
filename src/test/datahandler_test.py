@@ -63,14 +63,19 @@ if __name__ == '__main__':
         # 'Airplane', 'Bag', 'Cap', 'Car', 'Chair', 'Earphone', 'Guitar', 'Knife', 'Lamp', 'Laptop'
         # 'Motorbike', 'Mug', 'Pistol', 'Rocket', 'Skateboard', 'Table'
 
-        class_choice = ['Chair']
+        class_choice = [
+            'Airplane', 'Bag', 'Cap', 'Car', 'Chair', 'Earphone', 'Guitar',
+            'Knife', 'Lamp', 'Laptop', 'Motorbike', 'Mug', 'Pistol', 'Rocket',
+            'Skateboard', 'Table'
+        ]
 
         dataloaders = get_shapenetcore_dataloader(
             root=datapath,
             npoints=2500,
             classification=False,
+            normal_channel=True,
             class_choice=class_choice,
-            data_augmentation=True,
+            data_augmentation=False,
             batch_size=4,
             num_workers=8,
             shuffle=True,
@@ -82,7 +87,7 @@ if __name__ == '__main__':
 
             print(f"Number of data: {dataloaders[phase].__len__()}")
             for i in range(2):
-                ps, seg = sample._next_data()
+                ps, cls, seg = sample._next_data()
                 ps = ps[0]
                 seg = seg[0]
                 print(f"Num points: {len(ps.numpy())}")
@@ -91,13 +96,14 @@ if __name__ == '__main__':
 
                 visualize(
                     ps, [0, 0, 1],
-                    f'Part Segmentation - {phase} - ' + ' '.join(class_choice))
+                    f'Part Segmentation - {phase} - ' + class_choice[cls.numpy()[0]])
 
         # classification
         dataloaders = get_shapenetcore_dataloader(
             root=datapath,
             npoints=2500,
             classification=True,
+            normal_channel=False,
             data_augmentation=True,
             batch_size=4,
             num_workers=8,

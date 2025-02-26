@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 
 # file_path = "C:/Users/User/Desktop/Python/deep_learning/generative_point_net/src/pointnet/output/classification/shapenetcore/log.csv"
 # file_path = "C:/Users/User/Desktop/Python/deep_learning/generative_point_net/src/pointnet/output/classification/modelnet10/log.csv"
-file_path = "C:/Users/User/Desktop/Python/deep_learning/generative_point_net/src/pointnet/output/classification/modelnet40/log.csv"
+# file_path = "C:/Users/User/Desktop/Python/deep_learning/generative_point_net/src/pointnet/output/classification/modelnet40/log.csv"
+file_path = r"C:\Users\User\Desktop\Python\deep_learning\generative_point_net\src\pointnet\output\part_seg\log.csv"
 df = pd.read_csv(file_path)
 
 epochs = df.iloc[:, 0]

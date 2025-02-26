@@ -10,6 +10,9 @@ ShapeNetCore:
     https://dl.acm.org/doi/10.1145/2980179.2980238
     https://www.kaggle.com/datasets/guxue17/shapenet1?select=shapenet
 
+    Normal (xyz, rgb):
+        https://www.kaggle.com/datasets/mitkir/shapenet
+
 ShapeNet:
     https://arxiv.org/abs/1512.03012
     https://shapenet.org/
