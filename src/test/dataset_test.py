@@ -125,18 +125,20 @@ if __name__ == '__main__':
             npoints=10000,
             split='train',  # train | test
             data_augmentation=True,
+            file_format='txt',
         )
 
         print(f"Number of data: {len(d)}")
         for i in range(8):
-            sample = d[i]
+            sample = d.__getitem__(i)
+            print(sample[1].numpy())
             print(
-                f"\nClass: {modelnet10_id2label[sample[1].numpy()[0]]}\tNum points: {len(sample[0].numpy())}"
+                f"\nClass: {modelnet10_id2label[int(sample[1].numpy())]}\tNum points: {len(sample[0].numpy())}"
             )
             print(sample[0])
 
             visualize(sample[0], [0, 0, 1],
-                      modelnet10_id2label[sample[1].numpy()[0]])
+                      modelnet10_id2label[int(sample[1].numpy())])
 
     if dataset == 'modelnet40':
         gen_modelnet40_id(datapath)
@@ -148,15 +150,16 @@ if __name__ == '__main__':
             npoints=10000,
             split='train',  # train | test
             data_augmentation=True,
+            file_format='txt',
         )
 
         print(f"Number of data: {len(d)}")
         for i in range(8):
-            sample = d[i]
+            sample = d.__getitem__(i)
             print(
-                f"\nClass: {modelnet40_id2label[sample[1].numpy()[0]]}\tNum points: {len(sample[0].numpy())}"
+                f"\nClass: {modelnet40_id2label[int(sample[1].numpy())]}\tNum points: {len(sample[0].numpy())}"
             )
             print(sample[0])
 
             visualize(sample[0], [0, 0, 1],
-                      modelnet40_id2label[sample[1].numpy()[0]])
+                      modelnet40_id2label[int(sample[1].numpy())])

@@ -1,1 +1,0 @@
-C:\Users\User\Desktop\Python\deep_learning\generative_point_net\src\pointnet\output\classification\modelnet40\pointnet_pp_model_41.pth

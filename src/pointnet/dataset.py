@@ -91,9 +91,10 @@ modelnet40_label2id = {
 def pc_normalize(pc):
     centroid = np.mean(pc, axis=0)
     pc = pc - centroid
-    m = np.max(np.sqrt(np.sum(pc ** 2, axis=1)))
+    m = np.max(np.sqrt(np.sum(pc**2, axis=1)))
     pc = pc / m
     return pc
+
 
 def get_segmentation_classes(root):
     catfile = os.path.join(root, 'synsetoffset2category.txt')
@@ -175,7 +176,7 @@ class ShapeNetCoreDataset(data.Dataset):
 
     def __init__(self,
                  root,
-                 npoints=2500,
+                 npoints=1024,
                  classification=False,
                  class_choice=None,
                  split='train',
@@ -256,16 +257,22 @@ class ShapeNetCoreDataset(data.Dataset):
         self.cat = {k: v for k, v in self.cat.items()}
         self.classes_original = dict(zip(self.cat, range(len(self.cat))))
 
-        if not class_choice is  None:
-            self.cat = {k:v for k,v in self.cat.items() if k in class_choice}
+        if not class_choice is None:
+            self.cat = {k: v for k, v in self.cat.items() if k in class_choice}
         # print(self.cat)
 
         self.meta = {}
-        with open(os.path.join(self.root, 'train_test_split', 'shuffled_train_file_list.json'), 'r') as f:
+        with open(
+                os.path.join(self.root, 'train_test_split',
+                             'shuffled_train_file_list.json'), 'r') as f:
             train_ids = set([str(d.split('/')[2]) for d in json.load(f)])
-        with open(os.path.join(self.root, 'train_test_split', 'shuffled_val_file_list.json'), 'r') as f:
+        with open(
+                os.path.join(self.root, 'train_test_split',
+                             'shuffled_val_file_list.json'), 'r') as f:
             val_ids = set([str(d.split('/')[2]) for d in json.load(f)])
-        with open(os.path.join(self.root, 'train_test_split', 'shuffled_test_file_list.json'), 'r') as f:
+        with open(
+                os.path.join(self.root, 'train_test_split',
+                             'shuffled_test_file_list.json'), 'r') as f:
             test_ids = set([str(d.split('/')[2]) for d in json.load(f)])
         for item in self.cat:
             # print('category', item)
@@ -274,7 +281,10 @@ class ShapeNetCoreDataset(data.Dataset):
             fns = sorted(os.listdir(dir_point))
             # print(fns[0][0:-4])
             if split == 'trainval':
-                fns = [fn for fn in fns if ((fn[0:-4] in train_ids) or (fn[0:-4] in val_ids))]
+                fns = [
+                    fn for fn in fns
+                    if ((fn[0:-4] in train_ids) or (fn[0:-4] in val_ids))
+                ]
             elif split == 'train':
                 fns = [fn for fn in fns if fn[0:-4] in train_ids]
             elif split == 'val':
@@ -300,11 +310,24 @@ class ShapeNetCoreDataset(data.Dataset):
             self.classes[i] = self.classes_original[i]
 
         # Mapping from category ('Chair') to a list of int [10,11,12,13] as segmentation labels
-        self.seg_classes = {'Earphone': [16, 17, 18], 'Motorbike': [30, 31, 32, 33, 34, 35], 'Rocket': [41, 42, 43],
-                            'Car': [8, 9, 10, 11], 'Laptop': [28, 29], 'Cap': [6, 7], 'Skateboard': [44, 45, 46],
-                            'Mug': [36, 37], 'Guitar': [19, 20, 21], 'Bag': [4, 5], 'Lamp': [24, 25, 26, 27],
-                            'Table': [47, 48, 49], 'Airplane': [0, 1, 2, 3], 'Pistol': [38, 39, 40],
-                            'Chair': [12, 13, 14, 15], 'Knife': [22, 23]}
+        self.seg_classes = {
+            'Earphone': [16, 17, 18],
+            'Motorbike': [30, 31, 32, 33, 34, 35],
+            'Rocket': [41, 42, 43],
+            'Car': [8, 9, 10, 11],
+            'Laptop': [28, 29],
+            'Cap': [6, 7],
+            'Skateboard': [44, 45, 46],
+            'Mug': [36, 37],
+            'Guitar': [19, 20, 21],
+            'Bag': [4, 5],
+            'Lamp': [24, 25, 26, 27],
+            'Table': [47, 48, 49],
+            'Airplane': [0, 1, 2, 3],
+            'Pistol': [38, 39, 40],
+            'Chair': [12, 13, 14, 15],
+            'Knife': [22, 23]
+        }
 
     def __getitem__(self, index):
         # fn = self.datapath[index]
@@ -335,7 +358,7 @@ class ShapeNetCoreDataset(data.Dataset):
         # dist = np.max(np.sqrt(np.sum(point_set**2, axis=1)), 0)
         # point_set[:, 0:3] = point_set[:, 0:3] / dist  # scale
         point_set[:, 0:3] = pc_normalize(point_set[:, 0:3])
-        
+
         if self.data_augmentation:
             theta = np.random.uniform(0, np.pi * 2)
             rotation_matrix = np.array([[np.cos(theta), -np.sin(theta)],
@@ -359,106 +382,108 @@ class ShapeNetCoreDataset(data.Dataset):
         return len(self.datapath)
 
 
-class ModelNet10Dataset(data.Dataset):
+class ModelNetDataset(data.Dataset):
 
-    def __init__(
-            self,
-            root,
-            npoints=2500,
-            split='train',  # train | test
-            data_augmentation=True,
-            seed: int = None):
+    def __init__(self,
+                 root,
+                 npoints=1024,
+                 split='train',
+                 data_augmentation=True,
+                 file_format='txt',
+                 seed=None):
         self.npoints = npoints
         self.root = root
         self.split = split
-        self.actual_split_path = split + '_ply'
+        self.file_format = file_format  # 'ply' or 'txt'
+        self.actual_split_path = f"{split}_{file_format}"
         self.data_augmentation = data_augmentation
         self.fns = []
 
-        classes = [
-            'bathtub', 'bed', 'chair', 'desk', 'dresser', 'monitor',
-            'night_stand', 'sofa', 'table', 'toilet'
-        ]
+        # Define class categories
+        self.classes = self.get_classes()
 
-        # with open(os.path.join(root, '{}.txt'.format(self.split)), 'r') as f:
-        #     for line in f:
-        #         line = line.strip()
-        for line in classes:
-            for name in os.listdir(f"{root}/{line}/{self.actual_split_path}"):
-                datafile = f"{line}/{self.actual_split_path}/{name}"
-                self.fns.append(datafile)
+        # Load file names
+        for class_name in self.classes:
+            folder_path = os.path.join(root, class_name,
+                                       self.actual_split_path)
+            if not os.path.exists(folder_path):
+                continue
+            for name in os.listdir(folder_path):
+                self.fns.append(
+                    f"{class_name}/{self.actual_split_path}/{name}")
 
+        # Load class labels
         self.cat = {}
         with open(
-                os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                             'misc/modelnet10_id.txt'), 'r') as f:
+                os.path.join(os.path.dirname(__file__),
+                             f'misc/modelnet{len(self.classes)}_id.txt'),
+                'r') as f:
             for line in f:
                 ls = line.strip().split()
                 self.cat[ls[0]] = int(ls[1])
 
-        # print(self.fns)
-        # print(self.cat)
-        self.classes = list(self.cat.keys())
-
+        # Shuffle dataset
         if seed:
             np.random.seed(seed)
+        np.random.shuffle(self.fns)
 
-        indices = np.arange(len(self.fns))
-        np.random.shuffle(indices)
-        self.fns = np.array(self.fns)[indices]
+    def get_classes(self):
+        return []  # implemented in subclass
 
     def __getitem__(self, index):
         fn = self.fns[index]
         cls = self.cat[fn.split('/')[0]]
-        with open(os.path.join(self.root, fn), 'rb') as f:
-            plydata = PlyData.read(f)
-        pts = np.vstack([
-            plydata['vertex']['x'], plydata['vertex']['y'],
-            plydata['vertex']['z']
-        ]).T
+        file_path = os.path.join(self.root, fn)
+
+        if self.file_format == 'ply':
+            with open(file_path, 'rb') as f:
+                plydata = PlyData.read(f)
+            pts = np.vstack([
+                plydata['vertex']['x'], plydata['vertex']['y'],
+                plydata['vertex']['z']
+            ]).T
+        else:
+            pts = np.loadtxt(file_path)
+
+        point_set = self.preprocess_points(pts)
+        cls = torch.tensor(cls, dtype=torch.long)
+        return point_set, cls
+
+    def preprocess_points(self, pts):
         choice = np.random.choice(len(pts), self.npoints, replace=True)
         point_set = pts[choice, :]
 
-        point_set = point_set - np.expand_dims(np.mean(point_set, axis=0),
-                                               0)  # center
-        dist = np.max(np.sqrt(np.sum(point_set**2, axis=1)), 0)
-        point_set = point_set / dist  # scale
+        point_set -= np.mean(point_set, axis=0)
+        dist = np.max(np.sqrt(np.sum(point_set**2, axis=1)))
+        point_set /= dist
 
         if self.data_augmentation:
             theta = np.random.uniform(0, np.pi * 2)
             rotation_matrix = np.array([[np.cos(theta), -np.sin(theta)],
                                         [np.sin(theta),
                                          np.cos(theta)]])
-            point_set[:, [0, 2]] = point_set[:, [0, 2]].dot(
-                rotation_matrix)  # random rotation
-            point_set += np.random.normal(
-                0, 0.02, size=point_set.shape)  # random jitter
+            point_set[:, [0, 2]] = point_set[:, [0, 2]].dot(rotation_matrix)
+            point_set += np.random.normal(0, 0.02, size=point_set.shape)
 
-        point_set = torch.from_numpy(point_set.astype(np.float32))
-        cls = torch.from_numpy(np.array([cls]).astype(np.int64))
-        return point_set, cls
+        return torch.tensor(point_set, dtype=torch.float32)
 
     def __len__(self):
         return len(self.fns)
 
 
-class ModelNet40Dataset(data.Dataset):
+class ModelNet10Dataset(ModelNetDataset):
 
-    def __init__(
-            self,
-            root,
-            npoints=2500,
-            split='train',  # train | test
-            data_augmentation=True,
-            seed: int = None):
-        self.npoints = npoints
-        self.root = root
-        self.split = split
-        self.actual_split_path = split + '_ply'
-        self.data_augmentation = data_augmentation
-        self.fns = []
+    def get_classes(self):
+        return [
+            'bathtub', 'bed', 'chair', 'desk', 'dresser', 'monitor',
+            'night_stand', 'sofa', 'table', 'toilet'
+        ]
 
-        classes = [
+
+class ModelNet40Dataset(ModelNetDataset):
+
+    def get_classes(self):
+        return [
             "airplane", "bathtub", "bed", "bench", "bookshelf", "bottle",
             "bowl", "car", "chair", "cone", "cup", "curtain", "desk", "door",
             "dresser", "flower_pot", "glass_box", "guitar", "keyboard", "lamp",
@@ -467,63 +492,171 @@ class ModelNet40Dataset(data.Dataset):
             "table", "tent", "toilet", "tv_stand", "vase", "wardrobe", "xbox"
         ]
 
-        # with open(os.path.join(root, '{}.txt'.format(self.split)), 'r') as f:
-        #     for line in f:
-        for line in classes:
-            line = line.strip()
-            for name in os.listdir(f"{root}/{line}/{self.actual_split_path}"):
-                datafile = f"{line}/{self.actual_split_path}/{name}"
-                self.fns.append(datafile)
 
-        self.cat = {}
-        with open(
-                os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                             'misc/modelnet40_id.txt'), 'r') as f:
-            for line in f:
-                ls = line.strip().split()
-                self.cat[ls[0]] = int(ls[1])
+# class ModelNet10Dataset(data.Dataset):
 
-        # print(self.fns)
-        # print(self.cat)
-        self.classes = list(self.cat.keys())
+#     def __init__(
+#             self,
+#             root,
+#             npoints=1024,
+#             split='train',  # train | test
+#             data_augmentation=True,
+#             seed: int = None):
+#         self.npoints = npoints
+#         self.root = root
+#         self.split = split
+#         self.actual_split_path = split + '_ply'
+#         self.data_augmentation = data_augmentation
+#         self.fns = []
 
-        if seed:
-            np.random.seed(seed)
+#         classes = [
+#             'bathtub', 'bed', 'chair', 'desk', 'dresser', 'monitor',
+#             'night_stand', 'sofa', 'table', 'toilet'
+#         ]
 
-        indices = np.arange(len(self.fns))
-        np.random.shuffle(indices)
-        self.fns = np.array(self.fns)[indices]
+#         # with open(os.path.join(root, '{}.txt'.format(self.split)), 'r') as f:
+#         #     for line in f:
+#         #         line = line.strip()
+#         for line in classes:
+#             for name in os.listdir(f"{root}/{line}/{self.actual_split_path}"):
+#                 datafile = f"{line}/{self.actual_split_path}/{name}"
+#                 self.fns.append(datafile)
 
-    def __getitem__(self, index):
-        fn = self.fns[index]
-        cls = self.cat[fn.split('/')[0]]
-        with open(os.path.join(self.root, fn), 'rb') as f:
-            plydata = PlyData.read(f)
-        pts = np.vstack([
-            plydata['vertex']['x'], plydata['vertex']['y'],
-            plydata['vertex']['z']
-        ]).T
-        choice = np.random.choice(len(pts), self.npoints, replace=True)
-        point_set = pts[choice, :]
+#         self.cat = {}
+#         with open(
+#                 os.path.join(os.path.dirname(os.path.realpath(__file__)),
+#                              'misc/modelnet10_id.txt'), 'r') as f:
+#             for line in f:
+#                 ls = line.strip().split()
+#                 self.cat[ls[0]] = int(ls[1])
 
-        point_set = point_set - np.expand_dims(np.mean(point_set, axis=0),
-                                               0)  # center
-        dist = np.max(np.sqrt(np.sum(point_set**2, axis=1)), 0)
-        point_set = point_set / dist  # scale
+#         # print(self.fns)
+#         # print(self.cat)
+#         self.classes = list(self.cat.keys())
 
-        if self.data_augmentation:
-            theta = np.random.uniform(0, np.pi * 2)
-            rotation_matrix = np.array([[np.cos(theta), -np.sin(theta)],
-                                        [np.sin(theta),
-                                         np.cos(theta)]])
-            point_set[:, [0, 2]] = point_set[:, [0, 2]].dot(
-                rotation_matrix)  # random rotation
-            point_set += np.random.normal(
-                0, 0.02, size=point_set.shape)  # random jitter
+#         if seed:
+#             np.random.seed(seed)
 
-        point_set = torch.from_numpy(point_set.astype(np.float32))
-        cls = torch.from_numpy(np.array([cls]).astype(np.int64))
-        return point_set, cls
+#         indices = np.arange(len(self.fns))
+#         np.random.shuffle(indices)
+#         self.fns = np.array(self.fns)[indices]
 
-    def __len__(self):
-        return len(self.fns)
+#     def __getitem__(self, index):
+#         fn = self.fns[index]
+#         cls = self.cat[fn.split('/')[0]]
+#         with open(os.path.join(self.root, fn), 'rb') as f:
+#             plydata = PlyData.read(f)
+#         pts = np.vstack([
+#             plydata['vertex']['x'], plydata['vertex']['y'],
+#             plydata['vertex']['z']
+#         ]).T
+#         choice = np.random.choice(len(pts), self.npoints, replace=True)
+#         point_set = pts[choice, :]
+
+#         point_set = point_set - np.expand_dims(np.mean(point_set, axis=0),
+#                                                0)  # center
+#         dist = np.max(np.sqrt(np.sum(point_set**2, axis=1)), 0)
+#         point_set = point_set / dist  # scale
+
+#         if self.data_augmentation:
+#             theta = np.random.uniform(0, np.pi * 2)
+#             rotation_matrix = np.array([[np.cos(theta), -np.sin(theta)],
+#                                         [np.sin(theta),
+#                                          np.cos(theta)]])
+#             point_set[:, [0, 2]] = point_set[:, [0, 2]].dot(
+#                 rotation_matrix)  # random rotation
+#             point_set += np.random.normal(
+#                 0, 0.02, size=point_set.shape)  # random jitter
+
+#         point_set = torch.from_numpy(point_set.astype(np.float32))
+#         cls = torch.from_numpy(np.array([cls]).astype(np.int64))
+#         return point_set, cls
+
+#     def __len__(self):
+#         return len(self.fns)
+
+# class ModelNet40Dataset(data.Dataset):
+
+#     def __init__(
+#             self,
+#             root,
+#             npoints=1024,
+#             split='train',  # train | test
+#             data_augmentation=True,
+#             seed: int = None):
+#         self.npoints = npoints
+#         self.root = root
+#         self.split = split
+#         self.actual_split_path = split + '_ply'
+#         self.data_augmentation = data_augmentation
+#         self.fns = []
+
+#         classes = [
+#             "airplane", "bathtub", "bed", "bench", "bookshelf", "bottle",
+#             "bowl", "car", "chair", "cone", "cup", "curtain", "desk", "door",
+#             "dresser", "flower_pot", "glass_box", "guitar", "keyboard", "lamp",
+#             "laptop", "mantel", "monitor", "night_stand", "person", "piano",
+#             "plant", "radio", "range_hood", "sink", "sofa", "stairs", "stool",
+#             "table", "tent", "toilet", "tv_stand", "vase", "wardrobe", "xbox"
+#         ]
+
+#         # with open(os.path.join(root, '{}.txt'.format(self.split)), 'r') as f:
+#         #     for line in f:
+#         for line in classes:
+#             line = line.strip()
+#             for name in os.listdir(f"{root}/{line}/{self.actual_split_path}"):
+#                 datafile = f"{line}/{self.actual_split_path}/{name}"
+#                 self.fns.append(datafile)
+
+#         self.cat = {}
+#         with open(
+#                 os.path.join(os.path.dirname(os.path.realpath(__file__)),
+#                              'misc/modelnet40_id.txt'), 'r') as f:
+#             for line in f:
+#                 ls = line.strip().split()
+#                 self.cat[ls[0]] = int(ls[1])
+
+#         # print(self.fns)
+#         # print(self.cat)
+#         self.classes = list(self.cat.keys())
+
+#         if seed:
+#             np.random.seed(seed)
+
+#         indices = np.arange(len(self.fns))
+#         np.random.shuffle(indices)
+#         self.fns = np.array(self.fns)[indices]
+
+#     def __getitem__(self, index):
+#         fn = self.fns[index]
+#         cls = self.cat[fn.split('/')[0]]
+#         with open(os.path.join(self.root, fn), 'rb') as f:
+#             plydata = PlyData.read(f)
+#         pts = np.vstack([
+#             plydata['vertex']['x'], plydata['vertex']['y'],
+#             plydata['vertex']['z']
+#         ]).T
+#         choice = np.random.choice(len(pts), self.npoints, replace=True)
+#         point_set = pts[choice, :]
+
+#         point_set = point_set - np.expand_dims(np.mean(point_set, axis=0),
+#                                                0)  # center
+#         dist = np.max(np.sqrt(np.sum(point_set**2, axis=1)), 0)
+#         point_set = point_set / dist  # scale
+
+#         if self.data_augmentation:
+#             theta = np.random.uniform(0, np.pi * 2)
+#             rotation_matrix = np.array([[np.cos(theta), -np.sin(theta)],
+#                                         [np.sin(theta),
+#                                          np.cos(theta)]])
+#             point_set[:, [0, 2]] = point_set[:, [0, 2]].dot(
+#                 rotation_matrix)  # random rotation
+#             point_set += np.random.normal(
+#                 0, 0.02, size=point_set.shape)  # random jitter
+
+#         point_set = torch.from_numpy(point_set.astype(np.float32))
+#         cls = torch.from_numpy(np.array([cls]).astype(np.int64))
+#         return point_set, cls
+
+#     def __len__(self):
+#         return len(self.fns)

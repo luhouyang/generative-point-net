@@ -13,7 +13,7 @@ import torch.optim as optim
 import numpy as np
 
 from src.pointnet.datahandler import get_shapenetcore_dataloader
-from src.pointnet.model import PointNetPartSeg, PointNetPartSegLoss, feature_transform_regularizer
+from src.pointnet2.models.part_seg import PointNet2PartSegMSG, PointNet2PartSegMSGLoss
 
 seg_classes = {
     'Earphone': [16, 17, 18],
@@ -108,7 +108,7 @@ def main(is_training=True):
         'Skateboard', 'Table'
     ])
 
-    model = PointNetPartSeg(part_num=num_part)
+    model = PointNet2PartSegMSG(num_classes=num_part, normal_channel=True)
     model.apply(inplace_relu)
 
     # hyper-parameters from PointNet paper - Supplementary - C (pg.10)
@@ -123,15 +123,18 @@ def main(is_training=True):
 
     model.to(DEVICE)
 
-    criterion = PointNetPartSegLoss().to(DEVICE)
+    criterion = PointNet2PartSegMSGLoss().to(DEVICE)
 
     phases = ['train', 'test'] if is_training else ['test']
 
+    ### CREATE LOG FILE ###
     with open(os.path.join(args.output, 'log.csv'), 'w',
               newline='') as csvfile:
         csvfile.write(f"epoch,train_loss,train_acc,test_loss,test_acc\n")
 
     for epoch in range(args.epochs):
+
+        print(f"\n--- epoch: {epoch+1} ---")
 
         for phase in phases:
             if phase == 'Train':
@@ -143,6 +146,7 @@ def main(is_training=True):
             accuracy_list = []
 
             for sample in tqdm(iter(dataloaders[phase])):
+                ### DATA MANIPULATION ###
                 input_data, cls, labels = sample
 
                 batch_size = labels.numpy().shape[0]
@@ -154,20 +158,26 @@ def main(is_training=True):
                 labels = labels.to(DEVICE, non_blocking=True)
                 cls = cls.to(DEVICE, non_blocking=True)
 
+                ### TRAIN/TEST ###
+
                 model.zero_grad()
 
                 with torch.set_grad_enabled(phase == 'train'):
+                    ### CALL MODEL FORWARD ###
                     outputs, trans_feat = model(
                         input_data, to_categorical(cls, num_classes))
                     outputs = outputs.contiguous().view(-1, num_part)
 
+                    ### LOSS FN ###
                     loss = criterion(outputs, labels, trans_feat)
 
+                    ### BACK-PROPAGATION ###
                     if phase == 'train':
                         loss.backward()
 
                         optimizer.step()
 
+                ### BATCH CALCULATE METRICS ###
                 pred_choice = outputs.data.max(1)[1]
                 correct = pred_choice.eq(labels.data).cpu().sum()
                 accuracy = correct.item() / (float(batch_size) *
@@ -176,10 +186,11 @@ def main(is_training=True):
                 loss_list.append(loss.item())
                 accuracy_list.append(accuracy)
 
+            ### EPOCH CALCULATE METRICS ###
             epoch_loss = np.mean(loss_list)
             epoch_accuracy = np.mean(accuracy_list)
             print(
-                f"{epoch+1} | {phase} | loss: {epoch_loss}\taccuracy: {epoch_accuracy}\n"
+                f"epoch: {epoch+1} | {phase} | loss: {epoch_loss}\taccuracy: {epoch_accuracy}\n"
             )
             if (phase == 'train'):
                 train_loss_list.append(epoch_loss)
@@ -188,17 +199,22 @@ def main(is_training=True):
                 test_loss_list.append(epoch_loss)
                 test_accuracy_list.append(epoch_accuracy)
 
+        ### LR SCHEDULER UPDATES ###
         scheduler.step()
 
+        ### PRINT EPOCH RESULTS ###
+
+        ### SAVE RESULTS TO FILE ###
         with open(os.path.join(args.output, 'log.csv'), 'a',
                   newline='') as csvfile:
             csvfile.write(
                 f"{epoch+1},{train_loss_list[epoch]},{train_accuracy_list[epoch]},{test_loss_list[epoch]},{test_accuracy_list[epoch]}\n"
             )
 
+        ### SAVE MODEL ON CONDITION ###
         torch.save(
             model.state_dict(),
-            '%s/pointnet_part_seg_model_%d.pth' % (args.output, (epoch + 1)))
+            '%s/pointnet2_part_seg_model_%d.pth' % (args.output, (epoch + 1)))
 
 
 if __name__ == '__main__':
@@ -235,8 +251,11 @@ if __name__ == '__main__':
         '--dataset',
         type=str,
         default='shapenet',
-        help="select from shapenet",
+        help="select from shapenet | modelnet10 | modelnet40",
     )
+    parser.add_argument('--feature_transform',
+                        action='store_true',
+                        help="use feature transform")
 
     args = parser.parse_args()
 

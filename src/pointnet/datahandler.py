@@ -8,7 +8,7 @@ from typing import List
 
 def get_shapenetcore_dataloader(
     root: str,
-    npoints: int = 2500,
+    npoints: int = 1024,
     classification: bool = False,
     class_choice: List = None,
     data_augmentation: bool = True,
@@ -81,9 +81,10 @@ def get_shapenetcore_dataloader(
 
 def get_modelnet10_dataloader(
     root: str,
-    npoints: int = 2500,
+    npoints: int = 1024,
     data_augmentation: bool = True,
     batch_size: int = 32,
+    file_format='txt',
     num_workers: int = 8,
     shuffle: bool = True,
     is_training: bool = True,
@@ -109,6 +110,7 @@ def get_modelnet10_dataloader(
             split=x,
             npoints=npoints,
             data_augmentation=data_augmentation,
+            file_format=file_format,
         )
         for x in splits
     }
@@ -131,9 +133,10 @@ def get_modelnet10_dataloader(
 
 def get_modelnet40_dataloader(
     root: str,
-    npoints: int = 2500,
+    npoints: int = 1024,
     data_augmentation: bool = True,
     batch_size: int = 32,
+    file_format='txt',
     num_workers: int = 8,
     shuffle: bool = True,
     is_training: bool = True,
@@ -159,6 +162,7 @@ def get_modelnet40_dataloader(
             split=x,
             npoints=npoints,
             data_augmentation=data_augmentation,
+            file_format=file_format,
         )
         for x in splits
     }

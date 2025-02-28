@@ -14,6 +14,10 @@ import numpy as np
 from src.pointnet.datahandler import get_shapenetcore_dataloader, get_modelnet10_dataloader, get_modelnet40_dataloader
 from src.pointnet.model import PointNetCls, feature_transform_regularizer
 
+def inplace_relu(m):
+    classname = m.__class__.__name__
+    if classname.find('ReLU') != -1:
+        m.inplace = True
 
 def get_dataloaders(is_training=True):
     dataset = args.dataset
@@ -67,6 +71,7 @@ def main(is_training=True):
 
     model = PointNetCls(k=num_classes,
                         feature_transform=args.feature_transform)
+    model.apply(inplace_relu)
 
     # hyper-parameters from PointNet paper - Supplementary - C (pg.10)
     optimizer = optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.99))
@@ -90,6 +95,8 @@ def main(is_training=True):
 
     for epoch in range(args.epochs):
 
+        print(f"\n--- epoch: {epoch+1} ---")
+
         for phase in phases:
             if phase == 'Train':
                 model.train()
@@ -104,7 +111,7 @@ def main(is_training=True):
 
                 batch_size = labels.numpy().shape[0]
 
-                labels = labels[:, 0]
+                # labels = labels[:, 0]
                 input_data = input_data.transpose(2, 1)
 
                 input_data = input_data.to(DEVICE, non_blocking=True)
@@ -136,7 +143,7 @@ def main(is_training=True):
             epoch_loss = np.mean(loss_list)
             epoch_accuracy = np.mean(accuracy_list)
             print(
-                f"{epoch+1} | {phase} | loss: {epoch_loss}\taccuracy: {epoch_accuracy}\n"
+                f"epoch: {epoch+1} | {phase} | loss: {epoch_loss}\taccuracy: {epoch_accuracy}\n"
             )
             if (phase == 'train'):
                 train_loss_list.append(epoch_loss)
@@ -168,7 +175,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--num_points',
         type=int,
-        default=2500,
+        default=2048,
         help="number off points selected from point cloud",
     )
     parser.add_argument(

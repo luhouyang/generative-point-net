@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 import argparse
-from typing import List
 
 from tqdm import tqdm
 
@@ -12,31 +11,8 @@ import torch.optim as optim
 
 import numpy as np
 
-from src.pointnet.datahandler import get_shapenetcore_dataloader
-from src.pointnet.model import PointNetPartSeg, PointNetPartSegLoss, feature_transform_regularizer
-
-seg_classes = {
-    'Earphone': [16, 17, 18],
-    'Motorbike': [30, 31, 32, 33, 34, 35],
-    'Rocket': [41, 42, 43],
-    'Car': [8, 9, 10, 11],
-    'Laptop': [28, 29],
-    'Cap': [6, 7],
-    'Skateboard': [44, 45, 46],
-    'Mug': [36, 37],
-    'Guitar': [19, 20, 21],
-    'Bag': [4, 5],
-    'Lamp': [24, 25, 26, 27],
-    'Table': [47, 48, 49],
-    'Airplane': [0, 1, 2, 3],
-    'Pistol': [38, 39, 40],
-    'Chair': [12, 13, 14, 15],
-    'Knife': [22, 23]
-}
-seg_label_to_cat = {}  # {0:Airplane, 1:Airplane, ...49:Table}
-for cat in seg_classes.keys():
-    for label in seg_classes[cat]:
-        seg_label_to_cat[label] = cat
+from src.pointnet.datahandler import get_shapenetcore_dataloader, get_modelnet10_dataloader, get_modelnet40_dataloader
+from src.pointnet2.models.classification import PointNet2ClsSSG, PointNet2ClsSSGLoss, PointNet2ClsMSG, PointNet2ClsMSGLoss
 
 
 def inplace_relu(m):
@@ -45,48 +21,40 @@ def inplace_relu(m):
         m.inplace = True
 
 
-def to_categorical(y, num_classes):
-    """ 1-hot encodes a tensor """
-    new_y = torch.eye(num_classes)[
-        y.cpu().data.numpy(),
-    ]
-    if (y.is_cuda):
-        return new_y.cuda()
-    return new_y
-
-
-def get_dataloaders(is_training=True, class_choice=['Chair']):
+def get_dataloaders(is_training=True):
     dataset = args.dataset
-    if dataset not in ['shapenet']:
+    if dataset not in ['shapenet', 'modelnet10', 'modelnet40']:
         raise ValueError(
-            f"'{dataset}' is not a valid dataset choice. Please select from 'shapenet'"
+            f"'{dataset}' is not a valid dataset choice. Please select from 'shapenet' | 'modelnet10' | 'modelnet40'"
         )
 
     num_classes = {
         'shapenet': 16,
+        'modelnet10': 10,
+        'modelnet40': 40,
     }
-
-    accepted_classes = [
-        'Airplane', 'Bag', 'Cap', 'Car', 'Chair', 'Earphone', 'Guitar',
-        'Knife', 'Lamp', 'Laptop', 'Motorbike', 'Mug', 'Pistol', 'Rocket',
-        'Skateboard', 'Table'
-    ]
-
-    if isinstance(class_choice, List):
-        for cls in class_choice:
-            if cls not in accepted_classes:
-                raise ValueError(
-                    f"'{cls}' is not a valid class. Please select from {accepted_classes}"
-                )
 
     if dataset == 'shapenet':
         dataloaders = get_shapenetcore_dataloader(
             root=args.dataset_path,
             npoints=args.num_points,
-            classification=False,
-            data_augmentation=False,
-            normal_channel=True,
-            class_choice=class_choice,
+            classification=True,
+            batch_size=args.batch_size,
+            is_training=is_training,
+        )
+
+    elif dataset == 'modelnet10':
+        dataloaders = get_modelnet10_dataloader(
+            root=args.dataset_path,
+            npoints=args.num_points,
+            batch_size=args.batch_size,
+            is_training=is_training,
+        )
+
+    elif dataset == 'modelnet40':
+        dataloaders = get_modelnet40_dataloader(
+            root=args.dataset_path,
+            npoints=args.num_points,
             batch_size=args.batch_size,
             is_training=is_training,
         )
@@ -101,19 +69,15 @@ def get_dataloaders(is_training=True, class_choice=['Chair']):
 
 
 def main(is_training=True):
-    num_part = 50
-    dataloaders, num_classes = get_dataloaders(class_choice=[
-        'Airplane', 'Bag', 'Cap', 'Car', 'Chair', 'Earphone', 'Guitar',
-        'Knife', 'Lamp', 'Laptop', 'Motorbike', 'Mug', 'Pistol', 'Rocket',
-        'Skateboard', 'Table'
-    ])
+    dataloaders, num_classes = get_dataloaders()
 
-    model = PointNetPartSeg(part_num=num_part)
+    # model = PointNet2ClsSSG(num_class=num_classes, normal_channel=False)
+    model = PointNet2ClsMSG(num_class=num_classes, normal_channel=False)
     model.apply(inplace_relu)
 
     # hyper-parameters from PointNet paper - Supplementary - C (pg.10)
-    optimizer = optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.99))
-    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.5)
+    optimizer = optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.99), weight_decay=1e-4)
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.7)
 
     train_loss_list = []
     train_accuracy_list = []
@@ -123,7 +87,8 @@ def main(is_training=True):
 
     model.to(DEVICE)
 
-    criterion = PointNetPartSegLoss().to(DEVICE)
+    # criterion = PointNet2ClsSSGLoss()
+    criterion = PointNet2ClsMSGLoss().to(DEVICE)
 
     phases = ['train', 'test'] if is_training else ['test']
 
@@ -143,23 +108,20 @@ def main(is_training=True):
             accuracy_list = []
 
             for sample in tqdm(iter(dataloaders[phase])):
-                input_data, cls, labels = sample
+                input_data, labels = sample
 
                 batch_size = labels.numpy().shape[0]
 
-                labels = labels.view(-1, 1)[:, 0]
+                # labels = labels[:, 0]
                 input_data = input_data.transpose(2, 1)
 
-                input_data = input_data.to(DEVICE, non_blocking=True)
-                labels = labels.to(DEVICE, non_blocking=True)
-                cls = cls.to(DEVICE, non_blocking=True)
+                input_data = input_data.to(DEVICE)
+                labels = labels.to(DEVICE)
 
                 model.zero_grad()
 
                 with torch.set_grad_enabled(phase == 'train'):
-                    outputs, trans_feat = model(
-                        input_data, to_categorical(cls, num_classes))
-                    outputs = outputs.contiguous().view(-1, num_part)
+                    outputs, trans_feat = model(input_data)
 
                     loss = criterion(outputs, labels, trans_feat)
 
@@ -170,8 +132,7 @@ def main(is_training=True):
 
                 pred_choice = outputs.data.max(1)[1]
                 correct = pred_choice.eq(labels.data).cpu().sum()
-                accuracy = correct.item() / (float(batch_size) *
-                                             args.num_points)
+                accuracy = correct.item() / float(batch_size)
 
                 loss_list.append(loss.item())
                 accuracy_list.append(accuracy)
@@ -198,7 +159,7 @@ def main(is_training=True):
 
         torch.save(
             model.state_dict(),
-            '%s/pointnet_part_seg_model_%d.pth' % (args.output, (epoch + 1)))
+            '%s/pointnet2_cls_model_%d.pth' % (args.output, (epoch + 1)))
 
 
 if __name__ == '__main__':
@@ -212,7 +173,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--num_points',
         type=int,
-        default=1024,
+        default=2048,
         help="number off points selected from point cloud",
     )
     parser.add_argument(
@@ -235,7 +196,7 @@ if __name__ == '__main__':
         '--dataset',
         type=str,
         default='shapenet',
-        help="select from shapenet",
+        help="select from shapenet | modelnet10 | modelnet40",
     )
 
     args = parser.parse_args()

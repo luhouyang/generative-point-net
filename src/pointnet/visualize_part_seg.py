@@ -4,7 +4,7 @@ import torch
 import open3d as o3d
 import argparse
 import numpy as np
-from src.pointnet.model import PointNetPartSeg
+from pointnet.model import PointNetPartSeg
 from src.pointnet.datahandler import get_shapenetcore_dataloader
 import matplotlib.pyplot as plt
 

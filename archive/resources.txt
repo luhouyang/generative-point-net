@@ -16,3 +16,11 @@ ShapeNetCore:
 ShapeNet:
     https://arxiv.org/abs/1512.03012
     https://shapenet.org/
+
+ScanObjectNN:
+    https://arxiv.org/abs/1908.04616
+    https://hkust-vgd.github.io/scanobjectnn/
+    https://forms.gle/ZZRnnmaUdwfRucoy7
+
+ScanNet:
+    https://github.com/ScanNet/ScanNet

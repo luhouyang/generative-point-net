@@ -95,8 +95,8 @@ if __name__ == '__main__':
                 print(ps)
 
                 visualize(
-                    ps, [0, 0, 1],
-                    f'Part Segmentation - {phase} - ' + class_choice[cls.numpy()[0]])
+                    ps, [0, 0, 1], f'Part Segmentation - {phase} - ' +
+                    class_choice[cls.numpy()[0]])
 
         # classification
         dataloaders = get_shapenetcore_dataloader(
@@ -137,6 +137,7 @@ if __name__ == '__main__':
             root=datapath,
             npoints=10000,
             data_augmentation=True,
+            file_format='txt',
             batch_size=4,
             num_workers=8,
             shuffle=True,
@@ -166,6 +167,7 @@ if __name__ == '__main__':
             root=datapath,
             npoints=10000,
             data_augmentation=True,
+            file_format='txt',
             batch_size=4,
             num_workers=8,
             shuffle=True,
