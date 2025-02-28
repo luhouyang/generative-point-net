@@ -156,25 +156,25 @@ git clone --depth 1 https://github.com/luhouyang/generative-point-net.git
 
 **Datasets**
 
-1. ModelNet - [3D ShapeNets: A Deep Representation for Volumetric Shapes](https://arxiv.org/abs/1406.5670) | [dataset](https://3dshapenets.cs.princeton.edu) or [alternative source](https://modelnet.cs.princeton.edu)
+1. ModelNet - [paper](https://arxiv.org/abs/1406.5670) | [dataset](https://3dshapenets.cs.princeton.edu) or [alternative source](https://modelnet.cs.princeton.edu)
 
-1. ShapeNetCore (subset) - [A Scalable Active Framework for Region Annotation in 3D Shape Collections](https://dl.acm.org/doi/10.1145/2980179.2980238) | [dataset](https://www.kaggle.com/datasets/guxue17/shapenet1?select=shapenet)
+1. ShapeNetCore (subset) - [paper](https://dl.acm.org/doi/10.1145/2980179.2980238) | [dataset](https://www.kaggle.com/datasets/guxue17/shapenet1?select=shapenet)
 
-1. Stanford Large-Scale Indoor Spaces 3D Dataset - [3D Semantic Parsing of Large-Scale Indoor Spaces](https://ieeexplore.ieee.org/document/7780539) | [dataset](https://docs.google.com/forms/d/e/1FAIpQLScDimvNMCGhy_rmBA2gHfDu3naktRm6A8BPwAWWDv-Uhm6Shw/viewform)
+1. Stanford Large-Scale Indoor Spaces 3D Dataset - [paper](https://ieeexplore.ieee.org/document/7780539) | [dataset](https://docs.google.com/forms/d/e/1FAIpQLScDimvNMCGhy_rmBA2gHfDu3naktRm6A8BPwAWWDv-Uhm6Shw/viewform)
 
-1. ShapeNet - [ShapeNet: An Information-Rich 3D Model Repository](https://arxiv.org/abs/1512.03012) | [dataset](https://shapenet.org/)
+1. ShapeNet - [paper](https://arxiv.org/abs/1512.03012) | [dataset](https://shapenet.org/)
 
 **Technical**
 
-1. Generative PointNet - [Generative PointNet: Deep Energy-Based Learning on Unordered Point Sets for 3D Generation, Reconstruction and Classification](https://arxiv.org/abs/2004.01301) | [website](http://www.stat.ucla.edu/~jxie/GPointNet/) | [code](https://github.com/fei960922/GPointNet)
+1. Generative PointNet - [paper](https://arxiv.org/abs/2004.01301) | [website](http://www.stat.ucla.edu/~jxie/GPointNet/) | [code](https://github.com/fei960922/GPointNet)
 
-1. PointNet - [PointNet: Deep Learning on Point Sets for 3D Classification and Segmentation](https://arxiv.org/abs/1612.00593)
+1. PointNet - [paper](https://arxiv.org/abs/1612.00593)
 
-1. PointNet++ - [PointNet++: Deep Hierarchical Feature Learning on Point Sets in a Metric Space](https://arxiv.org/abs/1706.02413)
+1. PointNet++ - [paper](https://arxiv.org/abs/1706.02413)
 
-1. Generative Energy-Based Model - [A Theory of Generative ConvNet](https://arxiv.org/abs/1602.03264) | [code & data](http://www.stat.ucla.edu/~ywu/GenerativeConvNet/main.html)
+1. Generative Energy-Based Model - [paper](https://arxiv.org/abs/1602.03264) | [code & data](http://www.stat.ucla.edu/~ywu/GenerativeConvNet/main.html)
 
-1. MCMC-Based Maximum Likelihood Learning of EBMs - [On the Anatomy of MCMC-Based Maximum Likelihood Learning of Energy-Based Models](https://arxiv.org/abs/1903.12370)
+1. MCMC-Based Maximum Likelihood Learning of EBMs - [paper](https://arxiv.org/abs/1903.12370)
 
 **Repository**
 
