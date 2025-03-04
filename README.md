@@ -4,9 +4,11 @@
 
 :white_check_mark: Complete dataset loaders for ModelNet, ShapeNetCore, S3DIS
 
-:white_check_mark: PointNet Classification & Part Segmentation Model Exploration
+:white_check_mark: PointNet & PointNet++ Classification Model Exploration
 
-:white_large_square: PointNet++ Classification & Segmentation Model Exploration
+:white_check_mark: PointNet & PointNet++ Part Segmentation Model Exploration
+
+:white_large_square: PointNet & PointNet++ Segmentation Model Exploration
 
 :white_large_square: Learn about Energy-Based Model (EBM)
 
@@ -73,11 +75,11 @@ git clone --depth 1 https://github.com/luhouyang/generative-point-net.git
 
 - **PointNet**
 
-    1. Run classification training
+    1. Run classification training `--use_normal` flag to include normal in data
 
         ```
         cd PATH\generative-point-net
-        python -m src.pointnet.main --output OUTPUT_DIR --dataset_path DATA_DIR --dataset shapenet
+        python -m src.pointnet.main --output OUTPUT_DIR --dataset_path DATA_DIR --dataset modelnet10 --process_data
         ```
 
     1. Run segmentation training
@@ -86,6 +88,56 @@ git clone --depth 1 https://github.com/luhouyang/generative-point-net.git
         cd PATH\generative-point-net
         python -m src.pointnet.part_segmentation --output OUTPUT_DIR --dataset_path DATA_DIR --dataset shapenet
         ```
+
+- **PointNet++**
+
+    1. Run classification training `--use_normal` flag to include normal in data
+
+        ```
+        cd PATH\generative-point-net
+        python -m src.pointnet2.train_cls --output OUTPUT_DIR --dataset_path DATA_DIR --dataset modelnet10 --process_data
+        ```
+
+    1. Run segmentation training
+
+        ```
+        cd PATH\generative-point-net
+        python -m src.pointnet2.train_part_seg --output OUTPUT_DIR --dataset_path DATA_DIR --dataset shapenet
+        ```
+
+## Trained Models (No Normal)
+
+- **PointNet**
+
+    Classification
+
+    1. [ModelNet10](https://drive.google.com/file/d/1vg9PlzLc-8lH8pGVFjkeTe-HQkHiPoZ-/view?usp=sharing)
+
+    1. [ModelNet40](https://drive.google.com/file/d/1qKUTuDdPnP-rQ5ZZMmnUcAMtiPrnqs6u/view?usp=sharing)
+
+    Part Segmentation
+
+    1. [ShapeNetCore](https://drive.google.com/file/d/16JC6scMG_2xl2gw5zuED25k8aeCyXU-O/view?usp=sharing)
+
+    Semantic Segmentation
+
+    1. [S3DIS]()
+
+- **PointNet++**
+
+    Classification
+
+    1. [ModelNet10](https://drive.google.com/file/d/1kDQYkjuE2uCgki_mF3nmnAodQOkli_vl/view?usp=sharing)
+
+    1. [ModelNet40](https://drive.google.com/file/d/183Auoop7NOJvsTLi494ndBbirK58nvAC/view?usp=sharing)
+
+    Part Segmentation
+
+    1. [ShapeNetCore](https://drive.google.com/file/d/1xIasVRGiflhS_NVcsg7FIwmdrVg3qFxt/view?usp=sharing)
+
+    Semantic Segmentation
+
+    1. [S3DIS]()
 
 ## Classification Results
 
@@ -168,11 +220,11 @@ git clone --depth 1 https://github.com/luhouyang/generative-point-net.git
 ## Results
 
 - **PointNet**
-    ### *Classification Training Loss & Accuracy*
+    ### *Classification Training Loss & Accuracy ModelNet40*
 
-    ![PointNet Training Loss](/src/pointnet/output/classification/shapenetcore/train_test_loss.webp)
+    ![PointNet Training Loss](/src/pointnet/output/classification/no_normal/modelnet40/train_test_loss.png)
 
-    ![PointNet Training Accuracy](/src/pointnet/output/classification/shapenetcore/train_test_acc.webp)
+    ![PointNet Training Accuracy](/src/pointnet/output/classification/no_normal/modelnet40/train_test_acc.png)
 
     ### *Classification Prediction | 3/4 correct | 1/4 wrong*
 
@@ -186,43 +238,12 @@ git clone --depth 1 https://github.com/luhouyang/generative-point-net.git
 
     ![PointNet Training Accuracy](/src/pointnet/output/part_seg/train_test_acc.png)
 
-## Trained Models
-
-- **PointNet**
-
-    Classification
-
-    1. [ModelNet10](https://drive.google.com/file/d/16z72KgrnAcAB9U4zjA95E147uZFb2zjD/view?usp=sharing)
-
-    1. [ModelNet40](https://drive.google.com/file/d/1NwUDitpEFFnwJoQ9RAqlfNKFcxOcC5s8/view?usp=sharing)
-
-    1. [ShapeNetCore](https://drive.google.com/file/d/10bx_57_JCfq6G9Ql1hnd_GpZtPzXhdOm/view?usp=sharing)
-
-    Part Segmentation
-
-    1. [ShapeNetCore]()
-
-    Semantic Segmentation
-
-    1. [S3DIS]()
-
 - **PointNet++**
+    ### *Classification Training Loss & Accuracy ModelNet40*
 
-    Classification
+    ![PointNet Training Loss](/src/pointnet2/output/classification/msg/no_normal/modelnet40/train_test_loss.png)
 
-    1. [ModelNet10]()
-
-    1. [ModelNet40]()
-
-    1. [ShapeNetCore]()
-
-    Part Segmentation
-
-    1. [ShapeNetCore]()
-
-    Semantic Segmentation
-
-    1. [S3DIS]()
+    ![PointNet Training Accuracy](/src/pointnet2/output/classification/msg/no_normal/modelnet40/train_test_acc.png)
 
 ## Dataset Example Images
 
