@@ -1,5 +1,7 @@
 import sys
 
+from matplotlib import pyplot as plt
+
 from src.pointnet.dataset import *
 
 if __name__ == '__main__':
@@ -18,7 +20,50 @@ if __name__ == '__main__':
     dataset = sys.argv[1]
     datapath = sys.argv[2]
 
-    dataset_list = ['shapenet', 'modelnet10', 'modelnet40']
+    dataset_list = ['shapenet', 'modelnet10', 'modelnet40', 's3dis']
+
+    def generate_colormap(num_classes):
+        cmap = plt.get_cmap("tab10")  # Use 'tab10' for high-contrast colors
+        colors = np.array([cmap(i % 10)[:3]
+                           for i in range(num_classes)])  # Get RGB colors
+
+        # Increase color contrast by scaling values
+        colors = np.clip(colors * 1.2, 0, 1)  # Brighten colors slightly
+        return colors
+
+    # Create Open3D Point Cloud with Color Mapping
+    def create_open3d_point_cloud_color(points, labels, num_classes=50):
+        points = points.reshape(-1, 3).to(torch.float64).cpu().numpy()
+        labels = labels.cpu().numpy().astype(np.int32)
+
+        # Generate color mapping
+        colormap = generate_colormap(num_classes)
+
+        # Assign colors based on labels
+        colors = colormap[labels].astype(np.float64)  # Shape: [2500, 3]
+
+        pcd = o3d.geometry.PointCloud()
+        pcd.points = o3d.utility.Vector3dVector(points)
+        pcd.colors = o3d.utility.Vector3dVector(
+            colors)  # Assign different colors
+
+        return pcd
+
+    # Visualization Function
+    def visualize_color(
+        point_cloud,
+        labels,
+        msg,
+        num_classes=50,
+    ):
+        pcd = create_open3d_point_cloud_color(point_cloud, labels, num_classes)
+
+        vis = o3d.visualization.Visualizer()
+        vis.create_window(window_name=msg)
+        vis.add_geometry(pcd)
+
+        vis.run()
+        vis.destroy_window()
 
     def create_open3d_point_cloud(points, color):
         """
@@ -120,46 +165,84 @@ if __name__ == '__main__':
 
         modelnet10_id2label = {v: k for k, v in modelnet10_label2id.items()}
 
-        d = ModelNet10Dataset(
+        # d = ModelNet10Dataset(
+        #     root=datapath,
+        #     npoints=10000,
+        #     split='train',  # train | test
+        #     data_augmentation=True,
+        #     file_format='txt',
+        # )
+        d = ModelNetDataset(
+            npoints=2048,
+            num_category=10,
+            process_data=False,
             root=datapath,
-            npoints=10000,
-            split='train',  # train | test
-            data_augmentation=True,
-            file_format='txt',
+            split='train',
+            use_normals=True,
+            use_uniform_sample=True,
         )
 
         print(f"Number of data: {len(d)}")
         for i in range(8):
             sample = d.__getitem__(i)
-            print(sample[1].numpy())
+            print(sample[1])
             print(
-                f"\nClass: {modelnet10_id2label[int(sample[1].numpy())]}\tNum points: {len(sample[0].numpy())}"
+                f"\nClass: {modelnet10_id2label[int(sample[1])]}\tNum points: {len(sample[0])}"
             )
             print(sample[0])
-
-            visualize(sample[0], [0, 0, 1],
-                      modelnet10_id2label[int(sample[1].numpy())])
+            print(type(sample[0]))
+            visualize(torch.Tensor(sample[0][:, :3]), [0, 0, 1],
+                      modelnet10_id2label[int(sample[1])])
 
     if dataset == 'modelnet40':
         gen_modelnet40_id(datapath)
 
         modelnet40_id2label = {v: k for k, v in modelnet40_label2id.items()}
 
-        d = ModelNet40Dataset(
+        # d = ModelNet40Dataset(
+        #     root=datapath,
+        #     npoints=10000,
+        #     split='train',  # train | test
+        #     data_augmentation=True,
+        #     file_format='txt',
+        # )
+        d = ModelNetDataset(
+            npoints=2048,
+            num_category=40,
+            process_data=False,
             root=datapath,
-            npoints=10000,
-            split='train',  # train | test
-            data_augmentation=True,
-            file_format='txt',
+            split='train',
+            use_normals=True,
+            use_uniform_sample=True,
         )
 
         print(f"Number of data: {len(d)}")
         for i in range(8):
             sample = d.__getitem__(i)
             print(
-                f"\nClass: {modelnet40_id2label[int(sample[1].numpy())]}\tNum points: {len(sample[0].numpy())}"
+                f"\nClass: {modelnet40_id2label[int(sample[1])]}\tNum points: {len(sample[0])}"
             )
             print(sample[0])
 
-            visualize(sample[0], [0, 0, 1],
-                      modelnet40_id2label[int(sample[1].numpy())])
+            visualize(torch.Tensor(sample[0][:, :3]), [0, 0, 1],
+                      modelnet40_id2label[int(sample[1])])
+
+    if dataset == 's3dis':
+        d = S3DISDataset(split='train',
+                         data_root=datapath,
+                         num_point=4096,
+                         test_area=5,
+                         block_size=1.0,
+                         sample_rate=1.0,
+                         transform=None)
+
+        print(f"Number of samples in dataset: {len(d)}")
+        for i in range(8):
+            sample = d.__getitem__(i)
+            print(sample[1])  # Labels
+            print(f"\nNum points: {len(sample[0])}")
+            print(sample[0])  # Point cloud data
+            print(type(sample[0]))
+
+            visualize_color(torch.Tensor(sample[0][:, :3]),
+                            torch.tensor(sample[1]), f"Sample {i}")

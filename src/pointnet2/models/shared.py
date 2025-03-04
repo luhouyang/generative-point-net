@@ -158,6 +158,16 @@ def sample_and_group_all(xyz, points):
     return new_xyz, new_points
 
 
+def feature_transform_regularizer(trans):
+    d = trans.size()[1]
+    I = torch.eye(d)[None, :, :]
+    if trans.is_cuda:
+        I = I.cuda()
+    loss = torch.mean(
+        torch.norm(torch.bmm(trans, trans.transpose(2, 1)) - I, dim=(1, 2)))
+    return loss
+
+
 class PointNetSetAbstraction(nn.Module):
 
     def __init__(self, npoint, radius, nsample, in_channel, mlp, group_all):

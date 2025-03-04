@@ -11,13 +11,16 @@ import torch.optim as optim
 
 import numpy as np
 
+from src.pointnet import provider
 from src.pointnet.datahandler import get_shapenetcore_dataloader, get_modelnet10_dataloader, get_modelnet40_dataloader
-from src.pointnet.model import PointNetCls, feature_transform_regularizer
+from src.pointnet.model import PointNetCls, feature_transform_regularizer, PointNetClsLoss
+
 
 def inplace_relu(m):
     classname = m.__class__.__name__
     if classname.find('ReLU') != -1:
         m.inplace = True
+
 
 def get_dataloaders(is_training=True):
     dataset = args.dataset
@@ -47,6 +50,10 @@ def get_dataloaders(is_training=True):
             npoints=args.num_points,
             batch_size=args.batch_size,
             is_training=is_training,
+            process_data=args.process_data,
+            use_normals=True,
+            # use_normals=False,
+            use_uniform_sample=True,
         )
 
     elif dataset == 'modelnet40':
@@ -55,6 +62,10 @@ def get_dataloaders(is_training=True):
             npoints=args.num_points,
             batch_size=args.batch_size,
             is_training=is_training,
+            process_data=args.process_data,
+            use_normals=True,
+            # use_normals=False,
+            use_uniform_sample=True,
         )
 
     if is_training:
@@ -69,23 +80,23 @@ def get_dataloaders(is_training=True):
 def main(is_training=True):
     dataloaders, num_classes = get_dataloaders()
 
-    model = PointNetCls(k=num_classes,
-                        feature_transform=args.feature_transform)
+    # model = PointNetCls(k=num_classes, normal_channel=False)
+    model = PointNetCls(k=num_classes, normal_channel=True)
     model.apply(inplace_relu)
 
     # hyper-parameters from PointNet paper - Supplementary - C (pg.10)
     optimizer = optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.99))
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.5)
- 
+
     train_loss_list = []
     train_accuracy_list = []
 
     test_loss_list = []
     test_accuracy_list = []
 
-    model.to(DEVICE)
+    model = model.to(DEVICE)
 
-    criterion = F.cross_entropy
+    criterion = PointNetClsLoss().to(DEVICE)
 
     phases = ['train', 'test'] if is_training else ['test']
 
@@ -98,7 +109,7 @@ def main(is_training=True):
         print(f"\n--- epoch: {epoch+1} ---")
 
         for phase in phases:
-            if phase == 'Train':
+            if phase == 'train':
                 model.train()
             else:
                 model.eval()
@@ -107,26 +118,27 @@ def main(is_training=True):
             accuracy_list = []
 
             for sample in tqdm(iter(dataloaders[phase])):
-                input_data, labels = sample
+                points, labels = sample
+                points = points.data.numpy()
+                points = provider.random_point_dropout(points)
+                points[:, :,
+                       0:3] = provider.random_scale_point_cloud(points[:, :,
+                                                                       0:3])
+                points[:, :, 0:3] = provider.shift_point_cloud(points[:, :,
+                                                                      0:3])
+                points = torch.Tensor(points)
+                points = points.transpose(2, 1)
 
                 batch_size = labels.numpy().shape[0]
 
-                # labels = labels[:, 0]
-                input_data = input_data.transpose(2, 1)
-
-                input_data = input_data.to(DEVICE, non_blocking=True)
-                labels = labels.to(DEVICE, non_blocking=True)
+                points, labels = points.to(DEVICE), labels.to(DEVICE)
 
                 model.zero_grad()
 
                 with torch.set_grad_enabled(phase == 'train'):
-                    outputs, trans, trans_feat = model(input_data)
+                    outputs, trans_feat = model(points)
 
-                    loss = criterion(outputs, labels)
-
-                    if args.feature_transform:
-                        loss += feature_transform_regularizer(
-                            trans_feat) * 0.001
+                    loss = criterion(outputs, labels.long(), trans_feat)
 
                     if phase == 'train':
                         loss.backward()
@@ -169,7 +181,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--epochs',
         type=int,
-        default=100,
+        default=50,
         help="number of training epochs",
     )
     parser.add_argument(
@@ -200,9 +212,12 @@ if __name__ == '__main__':
         default='shapenet',
         help="select from shapenet | modelnet10 | modelnet40",
     )
-    parser.add_argument('--feature_transform',
-                        action='store_true',
-                        help="use feature transform")
+    parser.add_argument(
+        '--process_data',
+        action='store_true',
+        default=False,
+        help='save data offline',
+    )
 
     args = parser.parse_args()
 

@@ -11,6 +11,7 @@ import torch.optim as optim
 
 import numpy as np
 
+from src.pointnet import provider
 from src.pointnet.datahandler import get_shapenetcore_dataloader, get_modelnet10_dataloader, get_modelnet40_dataloader
 from src.pointnet2.models.classification import PointNet2ClsSSG, PointNet2ClsSSGLoss, PointNet2ClsMSG, PointNet2ClsMSGLoss
 
@@ -49,6 +50,9 @@ def get_dataloaders(is_training=True):
             npoints=args.num_points,
             batch_size=args.batch_size,
             is_training=is_training,
+            process_data=args.process_data,
+            use_normals=args.use_normal,
+            use_uniform_sample=True,
         )
 
     elif dataset == 'modelnet40':
@@ -57,6 +61,9 @@ def get_dataloaders(is_training=True):
             npoints=args.num_points,
             batch_size=args.batch_size,
             is_training=is_training,
+            process_data=args.process_data,
+            use_normals=args.use_normal,
+            use_uniform_sample=True,
         )
 
     if is_training:
@@ -71,13 +78,16 @@ def get_dataloaders(is_training=True):
 def main(is_training=True):
     dataloaders, num_classes = get_dataloaders()
 
-    # model = PointNet2ClsSSG(num_class=num_classes, normal_channel=False)
-    model = PointNet2ClsMSG(num_class=num_classes, normal_channel=False)
+    model = PointNet2ClsMSG(num_class=num_classes,
+                            normal_channel=args.use_normal)
     model.apply(inplace_relu)
 
     # hyper-parameters from PointNet paper - Supplementary - C (pg.10)
-    optimizer = optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.99), weight_decay=1e-4)
-    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.7)
+    optimizer = optim.Adam(model.parameters(),
+                           lr=0.001,
+                           betas=(0.9, 0.999),
+                           weight_decay=1e-4)
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.5)
 
     train_loss_list = []
     train_accuracy_list = []
@@ -87,7 +97,7 @@ def main(is_training=True):
 
     model.to(DEVICE)
 
-    # criterion = PointNet2ClsSSGLoss()
+    # criterion = PointNet2ClsSSGLoss().to(DEVICE)
     criterion = PointNet2ClsMSGLoss().to(DEVICE)
 
     phases = ['train', 'test'] if is_training else ['test']
@@ -98,8 +108,10 @@ def main(is_training=True):
 
     for epoch in range(args.epochs):
 
+        print(f"\n--- epoch: {epoch+1} ---")
+
         for phase in phases:
-            if phase == 'Train':
+            if phase == 'train':
                 model.train()
             else:
                 model.eval()
@@ -108,22 +120,31 @@ def main(is_training=True):
             accuracy_list = []
 
             for sample in tqdm(iter(dataloaders[phase])):
-                input_data, labels = sample
+                points, labels = sample
+                points = points.data.numpy()
+                points = provider.random_point_dropout(points)
+                points[:, :,
+                       0:3] = provider.random_scale_point_cloud(points[:, :,
+                                                                       0:3])
+                points[:, :, 0:3] = provider.shift_point_cloud(points[:, :,
+                                                                      0:3])
+                points = torch.Tensor(points)
+                points = points.transpose(2, 1)
 
                 batch_size = labels.numpy().shape[0]
 
-                # labels = labels[:, 0]
-                input_data = input_data.transpose(2, 1)
-
-                input_data = input_data.to(DEVICE)
-                labels = labels.to(DEVICE)
+                points, labels = points.to(DEVICE), labels.to(DEVICE)
 
                 model.zero_grad()
 
                 with torch.set_grad_enabled(phase == 'train'):
-                    outputs, trans_feat = model(input_data)
+                    outputs, trans_feat = model(points)
 
-                    loss = criterion(outputs, labels, trans_feat)
+                    loss = criterion(outputs, labels.long(), trans_feat)
+
+                    # outputs, tf3, tf2, tf1 = model(points)
+                    # loss = criterion(outputs, labels.long(), [tf3, tf2, tf1])
+                    # loss = criterion(outputs, labels.long())
 
                     if phase == 'train':
                         loss.backward()
@@ -167,7 +188,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--epochs',
         type=int,
-        default=100,
+        default=50,
         help="number of training epochs",
     )
     parser.add_argument(
@@ -182,10 +203,12 @@ if __name__ == '__main__':
         default=32,
         help="dataset batch size",
     )
-    parser.add_argument('--output',
-                        type=str,
-                        required=True,
-                        help="output folder")
+    parser.add_argument(
+        '--output',
+        type=str,
+        required=True,
+        help="output folder",
+    )
     parser.add_argument(
         '--dataset_path',
         type=str,
@@ -198,12 +221,31 @@ if __name__ == '__main__':
         default='shapenet',
         help="select from shapenet | modelnet10 | modelnet40",
     )
+    parser.add_argument(
+        '--process_data',
+        action='store_true',
+        default=False,
+        help='save data offline',
+    )
+    parser.add_argument(
+        '--use_normal',
+        action='store_true',
+        default=False,
+        help='use xyz and normals',
+    )
 
     args = parser.parse_args()
 
     if not Path(args.output).exists():
         raise ValueError(
             f"{args.output} doesn't exist. Please change or create.")
+
+    print(f"Running for {args.epochs} epochs")
+    print(f"Sampling {args.num_points} points")
+    print(f"Batch size: {args.batch_size}")
+    print(f"Output: {args.output}")
+    print(f"Dataset: {args.dataset}")
+    print(f"Using normals: {args.use_normal}")
 
     DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print("Using:", DEVICE)

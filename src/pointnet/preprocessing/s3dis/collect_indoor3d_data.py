@@ -26,3 +26,12 @@ for anno_path in anno_paths:
         collect_point_label(anno_path, os.path.join(output_folder, out_filename), 'numpy')
     except:
         print('ERROR! CHECK FILE NAME & PATH IF ERROR')
+
+"""
+@article{Pytorch_Pointnet_Pointnet2,
+      Author = {Xu Yan},
+      Title = {Pointnet/Pointnet++ Pytorch},
+      Journal = {https://github.com/yanx27/Pointnet_Pointnet2_pytorch},
+      Year = {2019}
+}
+"""

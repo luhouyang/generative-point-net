@@ -7,15 +7,14 @@ from torch.autograd import Variable
 import numpy as np
 import torch.nn.functional as F
 
+from src.pointnet.references.Pointnet_Pointnet2_pytorch.models.pointnet_utils import PointNetEncoder
 
 def feature_transform_regularizer(trans):
     d = trans.size()[1]
-    batchsize = trans.size()[0]
     I = torch.eye(d)[None, :, :]
     if trans.is_cuda:
         I = I.cuda()
-    loss = torch.mean(
-        torch.norm(torch.bmm(trans, trans.transpose(2, 1)) - I, dim=(1, 2)))
+    loss = torch.mean(torch.norm(torch.bmm(trans, trans.transpose(2, 1)) - I, dim=(1, 2)))
     return loss
 
 # input transform
@@ -31,7 +30,7 @@ def feature_transform_regularizer(trans):
 # learns a transformation matrix, orients the input point cloud before feature extraction
 class STN3d(nn.Module):
 
-    def __init__(self, channel=3):
+    def __init__(self, channel=6):
         super(STN3d, self).__init__()
         self.conv1 = torch.nn.Conv1d(channel, 64, 1)
         self.conv2 = torch.nn.Conv1d(64, 128, 1)
@@ -167,15 +166,36 @@ class PointNetfeat(nn.Module):
 # classification model
 class PointNetCls(nn.Module):
 
-    def __init__(self, k=2, feature_transform=False):
+    # def __init__(self, k=2, feature_transform=False):
+    #     super(PointNetCls, self).__init__()
+    #     self.feature_transform = feature_transform
+    #     self.feat = PointNetfeat(global_feat=True,
+    #                              feature_transform=feature_transform)
+    #     self.fc1 = nn.Linear(1024, 512)
+    #     self.fc2 = nn.Linear(512, 256)
+    #     self.fc3 = nn.Linear(256, k)
+    #     self.dropout = nn.Dropout(p=0.3)
+    #     self.bn1 = nn.BatchNorm1d(512)
+    #     self.bn2 = nn.BatchNorm1d(256)
+    #     self.relu = nn.ReLU()
+
+    # def forward(self, x):
+    #     x, trans, trans_feat = self.feat(x)
+    #     x = F.relu(self.bn1(self.fc1(x)))
+    #     x = F.relu(self.bn2(self.dropout(self.fc2(x))))
+    #     x = self.fc3(x)
+    #     return F.log_softmax(x, dim=1), trans, trans_feat
+    def __init__(self, k=40, normal_channel=True):
         super(PointNetCls, self).__init__()
-        self.feature_transform = feature_transform
-        self.feat = PointNetfeat(global_feat=True,
-                                 feature_transform=feature_transform)
+        if normal_channel:
+            channel = 6
+        else:
+            channel = 3
+        self.feat = PointNetEncoder(global_feat=True, feature_transform=True, channel=channel)
         self.fc1 = nn.Linear(1024, 512)
         self.fc2 = nn.Linear(512, 256)
         self.fc3 = nn.Linear(256, k)
-        self.dropout = nn.Dropout(p=0.3)
+        self.dropout = nn.Dropout(p=0.4)
         self.bn1 = nn.BatchNorm1d(512)
         self.bn2 = nn.BatchNorm1d(256)
         self.relu = nn.ReLU()
@@ -185,7 +205,20 @@ class PointNetCls(nn.Module):
         x = F.relu(self.bn1(self.fc1(x)))
         x = F.relu(self.bn2(self.dropout(self.fc2(x))))
         x = self.fc3(x)
-        return F.log_softmax(x, dim=1), trans, trans_feat
+        x = F.log_softmax(x, dim=1)
+        return x, trans_feat
+
+class PointNetClsLoss(torch.nn.Module):
+    def __init__(self, mat_diff_loss_scale=0.001):
+        super(PointNetClsLoss, self).__init__()
+        self.mat_diff_loss_scale = mat_diff_loss_scale
+
+    def forward(self, pred, target, trans_feat):
+        loss = F.nll_loss(pred, target)
+        mat_diff_loss = feature_transform_regularizer(trans_feat)
+
+        total_loss = loss + mat_diff_loss * self.mat_diff_loss_scale
+        return total_loss
 
 class PointNetPartSeg(nn.Module):
     def __init__(self, part_num=50, normal_channel=True):
@@ -266,35 +299,35 @@ class PointNetPartSegLoss(torch.nn.Module):
         total_loss = loss + mat_diff_loss * self.mat_diff_loss_scale
         return total_loss
 
-# not used for now
-class PointNetDenseCls(nn.Module):
+# # not used for now
+# class PointNetDenseCls(nn.Module):
 
-    def __init__(self, k=2, feature_transform=False):
-        super(PointNetDenseCls, self).__init__()
-        self.k = k
-        self.feature_transform = feature_transform
-        self.feat = PointNetfeat(global_feat=False,
-                                 feature_transform=feature_transform)
-        self.conv1 = torch.nn.Conv1d(1088, 512, 1)
-        self.conv2 = torch.nn.Conv1d(512, 256, 1)
-        self.conv3 = torch.nn.Conv1d(256, 128, 1)
-        self.conv4 = torch.nn.Conv1d(128, self.k, 1)
-        self.bn1 = nn.BatchNorm1d(512)
-        self.bn2 = nn.BatchNorm1d(256)
-        self.bn3 = nn.BatchNorm1d(128)
+#     def __init__(self, k=2, feature_transform=False):
+#         super(PointNetDenseCls, self).__init__()
+#         self.k = k
+#         self.feature_transform = feature_transform
+#         self.feat = PointNetfeat(global_feat=False,
+#                                  feature_transform=feature_transform)
+#         self.conv1 = torch.nn.Conv1d(1088, 512, 1)
+#         self.conv2 = torch.nn.Conv1d(512, 256, 1)
+#         self.conv3 = torch.nn.Conv1d(256, 128, 1)
+#         self.conv4 = torch.nn.Conv1d(128, self.k, 1)
+#         self.bn1 = nn.BatchNorm1d(512)
+#         self.bn2 = nn.BatchNorm1d(256)
+#         self.bn3 = nn.BatchNorm1d(128)
 
-    def forward(self, x):
-        batchsize = x.size()[0]
-        n_pts = x.size()[2]
-        x, trans, trans_feat = self.feat(x)
-        x = F.relu(self.bn1(self.conv1(x)))
-        x = F.relu(self.bn2(self.conv2(x)))
-        x = F.relu(self.bn3(self.conv3(x)))
-        x = self.conv4(x)
-        x = x.transpose(2, 1).contiguous()
-        x = F.log_softmax(x.view(-1, self.k), dim=-1)
-        x = x.view(batchsize, n_pts, self.k)
-        return x, trans, trans_feat
+#     def forward(self, x):
+#         batchsize = x.size()[0]
+#         n_pts = x.size()[2]
+#         x, trans, trans_feat = self.feat(x)
+#         x = F.relu(self.bn1(self.conv1(x)))
+#         x = F.relu(self.bn2(self.conv2(x)))
+#         x = F.relu(self.bn3(self.conv3(x)))
+#         x = self.conv4(x)
+#         x = x.transpose(2, 1).contiguous()
+#         x = F.log_softmax(x.view(-1, self.k), dim=-1)
+#         x = x.view(batchsize, n_pts, self.k)
+#         return x, trans, trans_feat
 
 
 """

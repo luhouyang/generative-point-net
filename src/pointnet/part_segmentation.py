@@ -86,6 +86,7 @@ def get_dataloaders(is_training=True, class_choice=['Chair']):
             classification=False,
             data_augmentation=False,
             normal_channel=True,
+            # normal_channel=False,
             class_choice=class_choice,
             batch_size=args.batch_size,
             is_training=is_training,
@@ -108,7 +109,7 @@ def main(is_training=True):
         'Skateboard', 'Table'
     ])
 
-    model = PointNetPartSeg(part_num=num_part)
+    model = PointNetPartSeg(part_num=num_part, normal_channel=True)
     model.apply(inplace_relu)
 
     # hyper-parameters from PointNet paper - Supplementary - C (pg.10)
@@ -134,7 +135,7 @@ def main(is_training=True):
     for epoch in range(args.epochs):
 
         for phase in phases:
-            if phase == 'Train':
+            if phase == 'train':
                 model.train()
             else:
                 model.eval()
@@ -206,13 +207,13 @@ if __name__ == '__main__':
     parser.add_argument(
         '--epochs',
         type=int,
-        default=100,
+        default=50,
         help="number of training epochs",
     )
     parser.add_argument(
         '--num_points',
         type=int,
-        default=1024,
+        default=2048,
         help="number off points selected from point cloud",
     )
     parser.add_argument(

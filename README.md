@@ -1,4 +1,4 @@
-# **Generative Point Cloud Model**
+# Generative Point Cloud Model
 
 **Progress**
 
@@ -18,37 +18,25 @@
 
 :white_large_square: New Generative Point Cloud Model
 
-## **Clone Latest**
+*pointnet and pointnet2 directories are used for learning and experimenting hence code is messy*
+
+## Clone Latest
 
 ```
 git clone --depth 1 https://github.com/luhouyang/generative-point-net.git
 ```
 
-## **Datasets**
+## Datasets
 
-- **ModelNet40** | [paper](https://arxiv.org/abs/1406.5670) | [dataset](https://3dshapenets.cs.princeton.edu) or [alternative source](https://modelnet.cs.princeton.edu)
+- **ModelNet40_Normal_Resampled** | [paper](https://arxiv.org/abs/1406.5670) | [dataset](https://www.kaggle.com/datasets/chenxaoyu/modelnet-normal-resampled) or [alternative source](https://shapenet.cs.stanford.edu/media/modelnet40_normal_resampled.zip)
 
-    1. Download the ModelNet40 dataset & unzip
-    1. Run preprocessing script [/src/pointnet/preprocessing/modelnet40/preprocessing.py](/src/pointnet/preprocessing/modelnet40/preprocess.py)
+    1. Download the ModelNet40_Normal_Resampled dataset & unzip
+    1. Use `--process_data` in all runs, first run will take longer to preproces and save data
     1. Example testing command
 
         ```
         cd PATH\generative-point-net
-        python -m src.test.dataset_test modelnet40 PATH\ModelNet40 
-        ```
-
-- **ModelNet10** | [paper](https://arxiv.org/abs/1406.5670) | [dataset](https://3dshapenets.cs.princeton.edu) or [alternative source](https://modelnet.cs.princeton.edu)
-
-    1. Download the ModelNet10 dataset & unzip
-    1. Delete `__MACOSX` directory
-    1. Delete `raw` directory
-    1. Delete all `.DS_Store` files
-    1. Run preprocessing script [/src/pointnet/preprocessing/modelnet10/preprocessing.py](/src/pointnet/preprocessing/modelnet10/preprocess.py)
-    1. Example testing command
-
-        ```
-        cd PATH\generative-point-net
-        python -m src.test.dataset_test modelnet10 PATH\ModelNet10 
+        python -m src.test.dataset_test modelnet40 PATH\ModelNet40 --process_data
         ```
 
 - **ShapeNetCore** | [paper](https://arxiv.org/abs/1512.03012) | [dataset](https://www.kaggle.com/datasets/mitkir/shapenet)
@@ -78,10 +66,10 @@ git clone --depth 1 https://github.com/luhouyang/generative-point-net.git
     1. Example testing command
 
         ```
-        UPCOMING
+        python -m src.test.dataset_test s3dis PATH\stanford_indoor3d
         ```
 
-## **Models**
+## Models
 
 - **PointNet**
 
@@ -99,7 +87,7 @@ git clone --depth 1 https://github.com/luhouyang/generative-point-net.git
         python -m src.pointnet.part_segmentation --output OUTPUT_DIR --dataset_path DATA_DIR --dataset shapenet
         ```
 
-## **Classification Results**
+## Classification Results
 
 - **PointNet**
 
@@ -119,22 +107,14 @@ git clone --depth 1 https://github.com/luhouyang/generative-point-net.git
         python -m src.pointnet.visualize_part_seg --model_path MODEL_PATH.pth --dataset_path DATA_DIR --num_samples 4
         ```
 
-## **Data Handlers**
+## Data Handlers
 
-- **ModelNet40**
-    1. Example testing command
+- **ModelNet**
+    1. Example testing command (change between `modelnet40` or `modelnet10`)
 
         ```
         cd PATH\generative-point-net
         python -m src.test.datahandler_test modelnet40 PATH\ModelNet40
-        ```
-
-- **ModelNet10**
-    1. Example testing command
-    
-        ```
-        cd PATH\generative-point-net
-        python -m src.test.datahandler_test modelnet10 PATH\ModelNet10
         ```
 
 - **ShapeNetCore**
@@ -149,10 +129,11 @@ git clone --depth 1 https://github.com/luhouyang/generative-point-net.git
     1. Example testing command
 
         ```
-        UPCOMING
+        cd PATH\generative-point-net
+        python -m src.test.datahandler_test s3dis PATH\stanford_indoor3d
         ```
 
-## **References**
+## References
 
 **Datasets**
 
@@ -184,7 +165,7 @@ git clone --depth 1 https://github.com/luhouyang/generative-point-net.git
 
 1. opeco17 - [pointnet](https://github.com/opeco17/pointnet.git)
 
-## **Results**
+## Results
 
 - **PointNet**
     ### *Classification Training Loss & Accuracy*
@@ -205,7 +186,7 @@ git clone --depth 1 https://github.com/luhouyang/generative-point-net.git
 
     ![PointNet Training Accuracy](/src/pointnet/output/part_seg/train_test_acc.png)
 
-## **Trained Models**
+## Trained Models
 
 - **PointNet**
 
@@ -243,7 +224,7 @@ git clone --depth 1 https://github.com/luhouyang/generative-point-net.git
 
     1. [S3DIS]()
 
-## **Dataset Example Images**
+## Dataset Example Images
 
 ![ModelNet40 Example 3D Point Cloud](/archive/images/modelnet40_3d_pointcloud_image.png)
 

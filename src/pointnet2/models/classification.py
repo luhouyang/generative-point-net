@@ -1,6 +1,6 @@
 import torch.nn as nn
 import torch.nn.functional as F
-from src.pointnet2.models.shared import PointNetSetAbstraction
+from src.pointnet2.models.shared import PointNetSetAbstraction, feature_transform_regularizer
 
 # single scale grouping (SSG)
 class PointNet2ClsSSG(nn.Module):
@@ -81,18 +81,25 @@ class PointNet2ClsMSG(nn.Module):
         x = l3_points.view(B, 1024)
         x = self.drop1(F.relu(self.bn1(self.fc1(x))))
         x = self.drop2(F.relu(self.bn2(self.fc2(x))))
+        # x = F.relu(self.bn2(self.fc2(x)))
         x = self.fc3(x)
         x = F.log_softmax(x, -1)
 
 
-        return x,l3_points
+        return x, l3_points
 
 
 class PointNet2ClsMSGLoss(nn.Module):
-    def __init__(self):
+    def __init__(self, mat_diff_loss_scale=0.001):
         super(PointNet2ClsMSGLoss, self).__init__()
+        self.mat_diff_loss_scale = mat_diff_loss_scale
 
     def forward(self, pred, target, trans_feat):
         total_loss = F.nll_loss(pred, target)
+        # for tf in trans_feat:
+        #     mat_diff_loss = feature_transform_regularizer(tf)
+        #     total_loss += mat_diff_loss * self.mat_diff_loss_scale
+        mat_diff_loss = feature_transform_regularizer(trans_feat)
+        total_loss += mat_diff_loss * self.mat_diff_loss_scale
 
         return total_loss

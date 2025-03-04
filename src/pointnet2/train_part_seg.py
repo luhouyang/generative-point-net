@@ -85,7 +85,7 @@ def get_dataloaders(is_training=True, class_choice=['Chair']):
             npoints=args.num_points,
             classification=False,
             data_augmentation=False,
-            normal_channel=True,
+            normal_channel=args.use_normal,
             class_choice=class_choice,
             batch_size=args.batch_size,
             is_training=is_training,
@@ -108,11 +108,12 @@ def main(is_training=True):
         'Skateboard', 'Table'
     ])
 
-    model = PointNet2PartSegMSG(num_classes=num_part, normal_channel=True)
+    model = PointNet2PartSegMSG(num_classes=num_part,
+                                normal_channel=args.use_normal)
     model.apply(inplace_relu)
 
     # hyper-parameters from PointNet paper - Supplementary - C (pg.10)
-    optimizer = optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.99))
+    optimizer = optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.999))
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.5)
 
     train_loss_list = []
@@ -137,7 +138,7 @@ def main(is_training=True):
         print(f"\n--- epoch: {epoch+1} ---")
 
         for phase in phases:
-            if phase == 'Train':
+            if phase == 'train':
                 model.train()
             else:
                 model.eval()
@@ -222,13 +223,13 @@ if __name__ == '__main__':
     parser.add_argument(
         '--epochs',
         type=int,
-        default=100,
+        default=50,
         help="number of training epochs",
     )
     parser.add_argument(
         '--num_points',
         type=int,
-        default=1024,
+        default=2048,
         help="number off points selected from point cloud",
     )
     parser.add_argument(
@@ -237,10 +238,12 @@ if __name__ == '__main__':
         default=32,
         help="dataset batch size",
     )
-    parser.add_argument('--output',
-                        type=str,
-                        required=True,
-                        help="output folder")
+    parser.add_argument(
+        '--output',
+        type=str,
+        required=True,
+        help="output folder",
+    )
     parser.add_argument(
         '--dataset_path',
         type=str,
@@ -253,11 +256,21 @@ if __name__ == '__main__':
         default='shapenet',
         help="select from shapenet | modelnet10 | modelnet40",
     )
-    parser.add_argument('--feature_transform',
-                        action='store_true',
-                        help="use feature transform")
+    parser.add_argument(
+        '--use_normal',
+        action='store_true',
+        default=False,
+        help='use xyz and normals',
+    )
 
     args = parser.parse_args()
+
+    print(f"Running for {args.epochs} epochs")
+    print(f"Sampling {args.num_points} points")
+    print(f"Batch size: {args.batch_size}")
+    print(f"Output: {args.output}")
+    print(f"Dataset: {args.dataset}")
+    print(f"Using normals: {args.use_normal}")
 
     if not Path(args.output).exists():
         raise ValueError(
