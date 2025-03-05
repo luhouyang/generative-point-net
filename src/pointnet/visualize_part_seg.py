@@ -4,7 +4,8 @@ import torch
 import open3d as o3d
 import argparse
 import numpy as np
-from pointnet.model import PointNetPartSeg
+from src.pointnet2.models.part_seg import PointNet2PartSegMSG
+from src.pointnet.model import PointNetPartSeg
 from src.pointnet.datahandler import get_shapenetcore_dataloader
 import matplotlib.pyplot as plt
 
@@ -111,7 +112,8 @@ def main(args):
     num_part = 50
     num_classes = 16
 
-    model = PointNetPartSeg(normal_channel=True, part_num=num_part)
+    # model = PointNetPartSeg(normal_channel=False, part_num=num_part)
+    model = PointNet2PartSegMSG(normal_channel=False, num_classes=num_part)
     model.load_state_dict(torch.load(args.model_path, map_location=device))
     model.to(device)
     model.eval()
@@ -127,7 +129,7 @@ def main(args):
                                              batch_size=1,
                                              classification=False,
                                              data_augmentation=True,
-                                             normal_channel=True,
+                                             normal_channel=False,
                                              class_choice=class_choices,
                                              is_training=False)['test']
 
@@ -167,7 +169,7 @@ if __name__ == '__main__':
                         help="Path to ShapeNet dataset")
     parser.add_argument('--num_points',
                         type=int,
-                        default=2500,
+                        default=1024,
                         help="Number of points in the point cloud")
     parser.add_argument('--num_samples',
                         type=int,

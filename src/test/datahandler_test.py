@@ -178,7 +178,7 @@ if __name__ == '__main__':
             sample = iter(dataloaders[phase])
 
             print(f"Number of data: {dataloaders[phase].__len__()}")
-            for i in range(2):
+            for i in range(4):
                 ps, cls, seg = sample._next_data()
                 ps = ps[0]
                 seg = seg[0]
@@ -308,7 +308,7 @@ if __name__ == '__main__':
 
             print(f"Number of data: {len(dataloader)}")
 
-            for i in range(4):
+            for i in range(8):
                 batch = next(samples)
 
                 points, labels = batch

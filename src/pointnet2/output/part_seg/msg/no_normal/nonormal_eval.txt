@@ -1,0 +1,29 @@
+2025-03-05 17:12:50,971 - Model - INFO - PARAMETER ...
+2025-03-05 17:12:50,972 - Model - INFO - Namespace(batch_size=24, model_path='C:\\Users\\User\\Desktop\\Python\\deep_learning\\generative_point_net\\src\\pointnet2\\output\\part_seg\\msg\\no_normal\\pointnet2_part_seg_model_48.pth', num_point=1024, output='C:\\Users\\User\\Desktop\\Python\\deep_learning\\generative_point_net\\src\\pointnet2\\output\\part_seg\\msg\\no_normal', normal=False, num_votes=3, dataset_path='D:\\storage\\shapenet\\shapenetcore_partanno_segmentation_benchmark_v0_normal')
+2025-03-05 17:12:51,006 - Model - INFO - The number of test data is: 2874
+2025-03-05 17:13:39,954 - Model - INFO - PARAMETER ...
+2025-03-05 17:13:39,954 - Model - INFO - Namespace(batch_size=24, model_path='C:\\Users\\User\\Desktop\\Python\\deep_learning\\generative_point_net\\src\\pointnet2\\output\\part_seg\\msg\\no_normal\\pointnet2_part_seg_model_48.pth', num_point=1024, output='C:\\Users\\User\\Desktop\\Python\\deep_learning\\generative_point_net\\src\\pointnet2\\output\\part_seg\\msg\\no_normal', normal=False, num_votes=3, dataset_path='D:\\storage\\shapenet\\shapenetcore_partanno_segmentation_benchmark_v0_normal')
+2025-03-05 17:13:39,992 - Model - INFO - The number of test data is: 2874
+2025-03-05 17:13:52,512 - Model - INFO - PARAMETER ...
+2025-03-05 17:13:52,512 - Model - INFO - Namespace(batch_size=24, model_path='C:\\Users\\User\\Desktop\\Python\\deep_learning\\generative_point_net\\src\\pointnet2\\output\\part_seg\\msg\\no_normal\\pointnet2_part_seg_model_48.pth', num_point=1024, output='C:\\Users\\User\\Desktop\\Python\\deep_learning\\generative_point_net\\src\\pointnet2\\output\\part_seg\\msg\\no_normal', normal=False, num_votes=3, dataset_path='D:\\storage\\shapenet\\shapenetcore_partanno_segmentation_benchmark_v0_normal')
+2025-03-05 17:13:52,548 - Model - INFO - The number of test data is: 2874
+2025-03-05 17:15:26,317 - Model - INFO - eval mIoU of Airplane       0.810541
+2025-03-05 17:15:26,317 - Model - INFO - eval mIoU of Bag            0.814628
+2025-03-05 17:15:26,317 - Model - INFO - eval mIoU of Cap            0.825044
+2025-03-05 17:15:26,317 - Model - INFO - eval mIoU of Car            0.786430
+2025-03-05 17:15:26,317 - Model - INFO - eval mIoU of Chair          0.895461
+2025-03-05 17:15:26,317 - Model - INFO - eval mIoU of Earphone       0.690980
+2025-03-05 17:15:26,317 - Model - INFO - eval mIoU of Guitar         0.910799
+2025-03-05 17:15:26,317 - Model - INFO - eval mIoU of Knife          0.855493
+2025-03-05 17:15:26,317 - Model - INFO - eval mIoU of Lamp           0.830375
+2025-03-05 17:15:26,317 - Model - INFO - eval mIoU of Laptop         0.951145
+2025-03-05 17:15:26,318 - Model - INFO - eval mIoU of Motorbike      0.687715
+2025-03-05 17:15:26,318 - Model - INFO - eval mIoU of Mug            0.938804
+2025-03-05 17:15:26,318 - Model - INFO - eval mIoU of Pistol         0.805634
+2025-03-05 17:15:26,318 - Model - INFO - eval mIoU of Rocket         0.575871
+2025-03-05 17:15:26,318 - Model - INFO - eval mIoU of Skateboard     0.766861
+2025-03-05 17:15:26,318 - Model - INFO - eval mIoU of Table          0.836328
+2025-03-05 17:15:26,318 - Model - INFO - Accuracy is: 0.93956
+2025-03-05 17:15:26,318 - Model - INFO - Class avg accuracy is: 0.86246
+2025-03-05 17:15:26,318 - Model - INFO - Class avg mIOU is: 0.81138
+2025-03-05 17:15:26,318 - Model - INFO - Inctance avg mIOU is: 0.84794

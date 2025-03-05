@@ -1,0 +1,23 @@
+2025-03-05 17:10:56,955 - Model - INFO - PARAMETER ...
+2025-03-05 17:10:56,956 - Model - INFO - Namespace(batch_size=24, model_path='C:\\Users\\User\\Desktop\\Python\\deep_learning\\generative_point_net\\src\\pointnet\\output\\part_seg\\normal\\pointnet_part_seg_model_50.pth', num_point=1024, output='C:\\Users\\User\\Desktop\\Python\\deep_learning\\generative_point_net\\src\\pointnet\\output\\part_seg\\normal', normal=True, num_votes=3, dataset_path='D:\\storage\\shapenet\\shapenetcore_partanno_segmentation_benchmark_v0_normal')
+2025-03-05 17:10:56,991 - Model - INFO - The number of test data is: 2874
+2025-03-05 17:11:07,905 - Model - INFO - eval mIoU of Airplane       0.819359
+2025-03-05 17:11:07,905 - Model - INFO - eval mIoU of Bag            0.810579
+2025-03-05 17:11:07,905 - Model - INFO - eval mIoU of Cap            0.828690
+2025-03-05 17:11:07,905 - Model - INFO - eval mIoU of Car            0.751013
+2025-03-05 17:11:07,905 - Model - INFO - eval mIoU of Chair          0.898143
+2025-03-05 17:11:07,905 - Model - INFO - eval mIoU of Earphone       0.746856
+2025-03-05 17:11:07,905 - Model - INFO - eval mIoU of Guitar         0.905407
+2025-03-05 17:11:07,905 - Model - INFO - eval mIoU of Knife          0.859032
+2025-03-05 17:11:07,905 - Model - INFO - eval mIoU of Lamp           0.805631
+2025-03-05 17:11:07,905 - Model - INFO - eval mIoU of Laptop         0.954890
+2025-03-05 17:11:07,905 - Model - INFO - eval mIoU of Motorbike      0.610975
+2025-03-05 17:11:07,906 - Model - INFO - eval mIoU of Mug            0.933624
+2025-03-05 17:11:07,906 - Model - INFO - eval mIoU of Pistol         0.820963
+2025-03-05 17:11:07,906 - Model - INFO - eval mIoU of Rocket         0.572993
+2025-03-05 17:11:07,906 - Model - INFO - eval mIoU of Skateboard     0.733958
+2025-03-05 17:11:07,906 - Model - INFO - eval mIoU of Table          0.820866
+2025-03-05 17:11:07,906 - Model - INFO - Accuracy is: 0.93555
+2025-03-05 17:11:07,906 - Model - INFO - Class avg accuracy is: 0.85741
+2025-03-05 17:11:07,906 - Model - INFO - Class avg mIOU is: 0.80456
+2025-03-05 17:11:07,906 - Model - INFO - Inctance avg mIOU is: 0.83929

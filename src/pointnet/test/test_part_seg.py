@@ -18,6 +18,8 @@ making non-singular matrix: https://www.johndcook.com/blog/2012/06/13/matrix-con
 
 import argparse
 import os
+from src.pointnet2.models.part_seg import PointNet2PartSegMSG
+from src.pointnet.model import PointNetPartSeg
 from src.pointnet.datahandler import ShapeNetCoreDataset
 import torch
 import logging
@@ -83,17 +85,29 @@ def parse_args():
                         required=True,
                         help='experiment root')
     parser.add_argument('--normal',
-                        action='store_false',
+                        action='store_true',
                         default=False,
                         help='use normals')
     parser.add_argument('--num_votes',
                         type=int,
                         default=3,
                         help='aggregate segmentation scores with voting')
+    parser.add_argument('--dataset_path',
+                        type=str,
+                        required=True,
+                        help="dataset root directory")
     return parser.parse_args()
 
 
 def main(args):
+
+    device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+
+    print(f"Sampling {args.num_point} points")
+    print(f"Batch size: {args.batch_size}")
+    print(f"Output: {args.output}")
+    print(f"Dataset: {args.dataset_path}")
+    print(f"Using normals: {args.normal}")
 
     def log_string(str):
         logger.info(str)
@@ -108,22 +122,27 @@ def main(args):
     logger.setLevel(logging.INFO)
     formatter = logging.Formatter(
         '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    file_handler = logging.FileHandler('%s/eval.txt' % args.output)
+    file_handler = logging.FileHandler('%s/%s_eval.txt' % (args.output, 'normal' if args.normal else 'nonormal'))
     file_handler.setLevel(logging.INFO)
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
     log_string('PARAMETER ...')
     log_string(args)
 
-    root = 'data/shapenetcore_partanno_segmentation_benchmark_v0_normal/'
+    # root = 'data/shapenetcore_partanno_segmentation_benchmark_v0_normal/'
 
     TEST_DATASET = ShapeNetCoreDataset(
-        root=root,
+        root=args.dataset_path,
         npoints=args.num_point,
         split='test',
         normal_channel=args.normal,
-        classification=True,
+        classification=False,
         data_augmentation=False,
+        class_choice=[
+            'Airplane', 'Bag', 'Cap', 'Car', 'Chair', 'Earphone', 'Guitar',
+            'Knife', 'Lamp', 'Laptop', 'Motorbike', 'Mug', 'Pistol', 'Rocket',
+            'Skateboard', 'Table'
+        ],
     )
     testDataLoader = torch.utils.data.DataLoader(TEST_DATASET,
                                                  batch_size=args.batch_size,
@@ -138,7 +157,11 @@ def main(args):
     # classifier = MODEL.get_model(num_part, normal_channel=args.normal).cuda()
     # checkpoint = torch.load(str(experiment_dir) + '/checkpoints/best_model.pth')
     # classifier.load_state_dict(checkpoint['model_state_dict'])
-    classifier = torch.jit.load(args.model_path)
+    # classifier = PointNetPartSeg(normal_channel=args.normal, part_num=num_part)
+    classifier = PointNet2PartSegMSG(normal_channel=args.normal, num_classes=num_part)
+    classifier.load_state_dict(torch.load(args.model_path, map_location=device))
+    classifier.to(device)
+    classifier.eval()
 
     with torch.no_grad():
         test_metrics = {}
@@ -218,7 +241,7 @@ def main(args):
         test_metrics['accuracy'] = total_correct / float(total_seen)
         test_metrics['class_avg_accuracy'] = np.mean(
             np.array(total_correct_class) /
-            np.array(total_seen_class, dtype=np.float))
+            np.array(total_seen_class, dtype=float))
         for cat in sorted(shape_ious.keys()):
             log_string('eval mIoU of %s %f' %
                        (cat + ' ' * (14 - len(cat)), shape_ious[cat]))

@@ -1,0 +1,69 @@
+2025-03-05 17:16:38,556 - Model - INFO - PARAMETER ...
+2025-03-05 17:16:38,556 - Model - INFO - Namespace(batch_size=24, model_path='C:\\Users\\User\\Desktop\\Python\\deep_learning\\generative_point_net\\src\\pointnet2\\output\\part_seg\\msg\\normal\\pointnet2_part_seg_model_50.pth', num_point=1024, output='C:\\Users\\User\\Desktop\\Python\\deep_learning\\generative_point_net\\src\\pointnet2\\output\\part_seg\\msg\\normal', normal=True, num_votes=3, dataset_path='D:\\storage\\shapenet\\shapenetcore_partanno_segmentation_benchmark_v0_normal')
+2025-03-05 17:16:38,590 - Model - INFO - The number of test data is: 2874
+2025-03-05 17:18:11,312 - Model - INFO - eval mIoU of Airplane       0.828764
+2025-03-05 17:18:11,314 - Model - INFO - eval mIoU of Bag            0.824264
+2025-03-05 17:18:11,314 - Model - INFO - eval mIoU of Cap            0.858388
+2025-03-05 17:18:11,314 - Model - INFO - eval mIoU of Car            0.785428
+2025-03-05 17:18:11,314 - Model - INFO - eval mIoU of Chair          0.907040
+2025-03-05 17:18:11,314 - Model - INFO - eval mIoU of Earphone       0.774811
+2025-03-05 17:18:11,314 - Model - INFO - eval mIoU of Guitar         0.911037
+2025-03-05 17:18:11,314 - Model - INFO - eval mIoU of Knife          0.873203
+2025-03-05 17:18:11,314 - Model - INFO - eval mIoU of Lamp           0.830756
+2025-03-05 17:18:11,314 - Model - INFO - eval mIoU of Laptop         0.955530
+2025-03-05 17:18:11,314 - Model - INFO - eval mIoU of Motorbike      0.692791
+2025-03-05 17:18:11,314 - Model - INFO - eval mIoU of Mug            0.947263
+2025-03-05 17:18:11,314 - Model - INFO - eval mIoU of Pistol         0.812661
+2025-03-05 17:18:11,314 - Model - INFO - eval mIoU of Rocket         0.645982
+2025-03-05 17:18:11,314 - Model - INFO - eval mIoU of Skateboard     0.753821
+2025-03-05 17:18:11,314 - Model - INFO - eval mIoU of Table          0.817857
+2025-03-05 17:18:11,314 - Model - INFO - Accuracy is: 0.94028
+2025-03-05 17:18:11,314 - Model - INFO - Class avg accuracy is: 0.87303
+2025-03-05 17:18:11,314 - Model - INFO - Class avg mIOU is: 0.82622
+2025-03-05 17:18:11,314 - Model - INFO - Inctance avg mIOU is: 0.84915
+2025-03-05 17:19:22,787 - Model - INFO - PARAMETER ...
+2025-03-05 17:19:22,787 - Model - INFO - Namespace(batch_size=24, model_path='C:\\Users\\User\\Desktop\\Python\\deep_learning\\generative_point_net\\src\\pointnet2\\output\\part_seg\\msg\\normal\\pointnet2_part_seg_model_50.pth', num_point=1024, output='C:\\Users\\User\\Desktop\\Python\\deep_learning\\generative_point_net\\src\\pointnet2\\output\\part_seg\\msg\\normal', normal=True, num_votes=3, dataset_path='D:\\storage\\shapenet\\shapenetcore_partanno_segmentation_benchmark_v0_normal')
+2025-03-05 17:19:22,821 - Model - INFO - The number of test data is: 2874
+2025-03-05 17:21:02,984 - Model - INFO - eval mIoU of Airplane       0.828283
+2025-03-05 17:21:02,984 - Model - INFO - eval mIoU of Bag            0.820758
+2025-03-05 17:21:02,984 - Model - INFO - eval mIoU of Cap            0.855489
+2025-03-05 17:21:02,985 - Model - INFO - eval mIoU of Car            0.785909
+2025-03-05 17:21:02,985 - Model - INFO - eval mIoU of Chair          0.906773
+2025-03-05 17:21:02,985 - Model - INFO - eval mIoU of Earphone       0.726894
+2025-03-05 17:21:02,985 - Model - INFO - eval mIoU of Guitar         0.911003
+2025-03-05 17:21:02,985 - Model - INFO - eval mIoU of Knife          0.872523
+2025-03-05 17:21:02,985 - Model - INFO - eval mIoU of Lamp           0.833535
+2025-03-05 17:21:02,985 - Model - INFO - eval mIoU of Laptop         0.953198
+2025-03-05 17:21:02,985 - Model - INFO - eval mIoU of Motorbike      0.673474
+2025-03-05 17:21:02,985 - Model - INFO - eval mIoU of Mug            0.937306
+2025-03-05 17:21:02,985 - Model - INFO - eval mIoU of Pistol         0.809276
+2025-03-05 17:21:02,985 - Model - INFO - eval mIoU of Rocket         0.627174
+2025-03-05 17:21:02,985 - Model - INFO - eval mIoU of Skateboard     0.761951
+2025-03-05 17:21:02,985 - Model - INFO - eval mIoU of Table          0.814534
+2025-03-05 17:21:02,985 - Model - INFO - Accuracy is: 0.94053
+2025-03-05 17:21:02,985 - Model - INFO - Class avg accuracy is: 0.87301
+2025-03-05 17:21:02,986 - Model - INFO - Class avg mIOU is: 0.81988
+2025-03-05 17:21:02,986 - Model - INFO - Inctance avg mIOU is: 0.84748
+2025-03-05 17:21:49,809 - Model - INFO - PARAMETER ...
+2025-03-05 17:21:49,809 - Model - INFO - Namespace(batch_size=24, model_path='C:\\Users\\User\\Desktop\\Python\\deep_learning\\generative_point_net\\src\\pointnet2\\output\\part_seg\\msg\\normal\\pointnet2_part_seg_model_46.pth', num_point=1024, output='C:\\Users\\User\\Desktop\\Python\\deep_learning\\generative_point_net\\src\\pointnet2\\output\\part_seg\\msg\\normal', normal=True, num_votes=3, dataset_path='D:\\storage\\shapenet\\shapenetcore_partanno_segmentation_benchmark_v0_normal')
+2025-03-05 17:21:49,845 - Model - INFO - The number of test data is: 2874
+2025-03-05 17:23:24,587 - Model - INFO - eval mIoU of Airplane       0.830508
+2025-03-05 17:23:24,588 - Model - INFO - eval mIoU of Bag            0.811254
+2025-03-05 17:23:24,588 - Model - INFO - eval mIoU of Cap            0.847597
+2025-03-05 17:23:24,588 - Model - INFO - eval mIoU of Car            0.786386
+2025-03-05 17:23:24,588 - Model - INFO - eval mIoU of Chair          0.907944
+2025-03-05 17:23:24,588 - Model - INFO - eval mIoU of Earphone       0.771213
+2025-03-05 17:23:24,588 - Model - INFO - eval mIoU of Guitar         0.910415
+2025-03-05 17:23:24,588 - Model - INFO - eval mIoU of Knife          0.873442
+2025-03-05 17:23:24,588 - Model - INFO - eval mIoU of Lamp           0.830356
+2025-03-05 17:23:24,588 - Model - INFO - eval mIoU of Laptop         0.954708
+2025-03-05 17:23:24,588 - Model - INFO - eval mIoU of Motorbike      0.687484
+2025-03-05 17:23:24,588 - Model - INFO - eval mIoU of Mug            0.943700
+2025-03-05 17:23:24,588 - Model - INFO - eval mIoU of Pistol         0.809043
+2025-03-05 17:23:24,588 - Model - INFO - eval mIoU of Rocket         0.586112
+2025-03-05 17:23:24,588 - Model - INFO - eval mIoU of Skateboard     0.770768
+2025-03-05 17:23:24,588 - Model - INFO - eval mIoU of Table          0.825253
+2025-03-05 17:23:24,589 - Model - INFO - Accuracy is: 0.94093
+2025-03-05 17:23:24,589 - Model - INFO - Class avg accuracy is: 0.86210
+2025-03-05 17:23:24,589 - Model - INFO - Class avg mIOU is: 0.82164
+2025-03-05 17:23:24,589 - Model - INFO - Inctance avg mIOU is: 0.85134
