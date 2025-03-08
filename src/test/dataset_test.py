@@ -243,6 +243,7 @@ if __name__ == '__main__':
             print(f"\nNum points: {len(sample[0])}")
             print(sample[0])  # Point cloud data
             print(type(sample[0]))
+            print(sample[0].shape)
 
             visualize_color(torch.Tensor(sample[0][:, :3]),
                             torch.tensor(sample[1]), f"Sample {i}")
