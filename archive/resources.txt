@@ -28,3 +28,13 @@ ScanObjectNN:
 
 ScanNet:
     https://github.com/ScanNet/ScanNet
+    https://ieeexplore.ieee.org/document/8099744
+
+InLUT3D:
+    https://arxiv.org/abs/2408.03338v1 
+
+TS40K:
+    https://arxiv.org/abs/2405.13989v1
+
+ARCH2S:
+    https://arxiv.org/abs/2406.01337v1 
