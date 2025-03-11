@@ -8,7 +8,7 @@
 
 :white_check_mark: PointNet & PointNet++ Part Segmentation Model Exploration
 
-:white_large_square: PointNet & PointNet++ Segmentation Model Exploration
+:white_check_mark: PointNet & PointNet++ Segmentation Model Exploration
 
 :white_large_square: Learn about Energy-Based Model (EBM)
 
