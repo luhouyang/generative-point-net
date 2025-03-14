@@ -1,3 +1,5 @@
+from dataset import get_emnist
+
 def main():
     pass
 
